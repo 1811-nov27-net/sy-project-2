@@ -1,0 +1,38 @@
+Misc: Create Config.txt as JSON message
+	- "filepath"
+	- "URL"
+	- "Username"
+	-"Password"
+	-"Retry": "2"
+	-"cardNumber"
+	-"cardType"
+	-"cvv"
+	-"expMonth"
+	-"expYear"
+
+1. Load Data
+	- Read Config.txt and store
+		Deserialize JSON
+	- Read Orders.xlsx and store
+		Product sheet and Address sheet
+
+2. Log in
+	- Open IE 11+
+	- Go to training.openspan.com
+	- Log in with credentials from Config.txt
+
+3. Order Items
+	- Select items and quantity based on data from Orders.xlsx "Product"
+		Exception handling, if fails just simply go back to product list/skip item
+	- After selecting items, fill out address with details from Orders.xlsx "Address"
+		Click on Ship to Billing Address to fill out billing address field
+	- Fill out payment info with card information from Config.txt
+	- Submit order, save Order# as a variable
+
+4. Log Info
+	- Write status and notes of each individual product ordered in Orders.xlsx
+	- Status: success or fail
+	- Notes: Order# on success, and exception on failure
+
+5. Send Invoice
+	- Email invoice of the ordered items to the Admin of the excel (yourself)

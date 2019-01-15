@@ -1,0 +1,11 @@
+{"filePath": "Orders.xlsx",
+ "URL": "http://training.openspan.com/login",
+ "Username": "test_user",
+ "Password": "test123",
+ "Retry": "2",
+ "cardNumber":"4532 5498 4490 5013",
+ "cardType":"Visa",
+ "cvv":"048",
+ "expMonth":"07",
+ "expYear":"20"
+ }
