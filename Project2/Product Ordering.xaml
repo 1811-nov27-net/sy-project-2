@@ -75,6 +75,7 @@
   <Sequence DisplayName="Product Ordering" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:Int32" Default="0" Name="counter" />
+      <Variable x:TypeArguments="x:Boolean" Name="isSelectable" />
     </Sequence.Variables>
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Reading and writing to ProductOrders.xlsx" />
     <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" WorkbookPath="ProductOrders.xlsx">
@@ -113,12 +114,13 @@
                         <InArgument x:TypeArguments="x:String">[excelPQuantity.ToString]</InArgument>
                       </Assign.Value>
                     </Assign>
-                    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Placing Order on Web.xaml">
+                    <ui:InvokeWorkflowFile ContinueOnError="True" DisplayName="Invoke Workflow File" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Placing Order on Web.xaml">
                       <ui:InvokeWorkflowFile.Arguments>
                         <InArgument x:TypeArguments="x:String" x:Key="productName">[productName]</InArgument>
                         <InArgument x:TypeArguments="x:String" x:Key="productQuantity">[productQuantity]</InArgument>
                         <InArgument x:TypeArguments="ui:Browser" x:Key="webLogin">[webLogin]</InArgument>
                         <OutArgument x:TypeArguments="x:String" x:Key="status">[status]</OutArgument>
+                        <OutArgument x:TypeArguments="x:Boolean" x:Key="isSelectable">[isSelectable]</OutArgument>
                       </ui:InvokeWorkflowFile.Arguments>
                     </ui:InvokeWorkflowFile>
                     <ui:ExcelWriteCell Cell="[&quot;C&quot; + (2 + counter).ToString]" DisplayName="Write Cell Status Column" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_1" SheetName="Orders" Text="[status]" />
@@ -138,7 +140,7 @@
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
-    <sads:DebugSymbol.Symbol>dz1FOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUHJvZHVjdCBPcmRlcmluZy54YW1sIksDjgEOAgEBTTNNNgIBAk8FT4oBAgEvUAWMASACAQNPXE+HAQIBMFCgAVC0AQIBLlYLiQEWAgEEVw2IAR0CAQVXPldKAgEsXROFAR4CAQZiFWYlAgEmZxVrJQIBIGwVcx4CARx0FXstAgESfBV81wECAQx9FYQBHgIBB2RBZE4CASpivQFixAECAShiWGJhAgEnaUhpWAIBJGexAWe4AQIBImdYZ2ICASFxQHFZAgEfbkFuUgIBHXZUdmECARp5UHlYAgEYdMEBdNwBAgEXd1h3aQIBFXhTeF0CARN8LXxXAgEQfMoBfNQBAgEOfLwBfMQBAgENggE/ggFMAgEKf0B/SQIBCA==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>dz1FOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUHJvZHVjdCBPcmRlcmluZy54YW1sJEsDkAEOAgEBTTNNNgIBAlAFUIoBAgEyUQWOASACAQNQXFCHAQIBM1GgAVG0AQIBMVcLiwEWAgEEWA2KAR0CAQVYPlhKAgEvXhOHAR4CAQZjFWclAgEpaBVsJQIBI20VdB4CAR91FX0tAgESfhV+1wECAQx/FYYBHgIBB2VBZU4CAS1jvQFjxAECAStjWGNhAgEqakhqWAIBJ2ixAWi4AQIBJWhYaGICASRyQHJZAgEib0FvUgIBIHU8dUICAR57V3tlAgEcd1R3YQIBGnpQelgCARh1vQF12AECARd4WHhpAgEVeVN5XQIBE34tflcCARB+ygF+1AECAQ5+vAF+xAECAQ2EAT+EAUwCAQqBAUCBAUkCAQg=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
