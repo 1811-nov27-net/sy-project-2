@@ -92,7 +92,22 @@
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_4" Text="Successfully read and stored data from Orders.xlsx" />
-    <sads:DebugSymbol.Symbol>d0BFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUmVhZGluZyBPcmRlcnMueGxzeC54YW1sEEMDYA4CAQFEBUR0AgERRQVdIAIBBF4FXpMBAgECRFxEcQIBEkWgAUWtAQIBEEsLWhYCAQVeXF6QAQIBA0wNUiECAQtTDVkhAgEGTDxMSAIBDk8TT0ICAQ1MsQFMuQECAQxTPFNJAgEJVhNWQgIBCFOzAVO8AQIBBw==</sads:DebugSymbol.Symbol>
+    <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_5" Text="Copying data tables over into a new readable/writable Excel sheet" />
+    <ui:ExcelApplicationScope Password="{x:Null}" sap2010:Annotation.AnnotationText="Unfortunately, the purpose of this scope is to write to a new excel document, as apparently in Orchestrator, any excel document NOT made by the robot will be treated as read only access" DisplayName="Excel Application Scope" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_2" WorkbookPath="ProductOrders.xlsx">
+      <ui:ExcelApplicationScope.Body>
+        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbookScope" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Do" sap2010:WorkflowViewState.IdRef="Sequence_3">
+            <ui:ExcelWriteRange AddHeaders="True" DataTable="[dtOrders]" DisplayName="Write Range" sap2010:WorkflowViewState.IdRef="ExcelWriteRange_1" SheetName="Orders" StartingCell="A1" />
+            <ui:ExcelWriteRange AddHeaders="True" DataTable="[dtAddress]" DisplayName="Write Range" sap2010:WorkflowViewState.IdRef="ExcelWriteRange_2" SheetName="Address" StartingCell="A1" />
+          </Sequence>
+        </ActivityAction>
+      </ui:ExcelApplicationScope.Body>
+    </ui:ExcelApplicationScope>
+    <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_6" Text="Finished copying over data tables" />
+    <sads:DebugSymbol.Symbol>d0BFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUmVhZGluZyBPcmRlcnMueGxzeC54YW1sH0MDbw4CAQFEBUR0AgEiRQVdIAIBFV4FXpMBAgETXwVfogECARFgBWwgAgEEbQVtggECAQJEXERxAgEjRaABRa0BAgEhSwtaFgIBFl5cXpABAgEUX1xfnwECARJg/gJgkgMCARBmC2kWAgEFbVxtfwIBA0wNUiECARxTDVkhAgEXZw1nvwECAQtoDWjBAQIBBkw8TEgCAR9PE09CAgEeTLEBTLkBAgEdUzxTSQIBGlYTVkICARlTswFTvAECARhnuAFnvAECAQ9nPWdJAgENZ6IBZ6oBAgEMaLoBaL4BAgEKaD1oSgIBCGijAWisAQIBBw==</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -108,7 +123,25 @@
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="ExcelApplicationScope_1" sap:VirtualizedContainerService.HintSize="414,391" />
       <sap2010:ViewStateData Id="WriteLine_4" sap:VirtualizedContainerService.HintSize="414,61" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="436,717">
+      <sap2010:ViewStateData Id="WriteLine_5" sap:VirtualizedContainerService.HintSize="414,61" />
+      <sap2010:ViewStateData Id="ExcelWriteRange_1" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="ExcelWriteRange_2" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="336,338">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ExcelApplicationScope_2" sap:VirtualizedContainerService.HintSize="414,447">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="WriteLine_6" sap:VirtualizedContainerService.HintSize="414,61" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="436,1406">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -116,7 +149,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Reading_Orders_xlsx_1" sap:VirtualizedContainerService.HintSize="476,837" />
+      <sap2010:ViewStateData Id="Reading_Orders_xlsx_1" sap:VirtualizedContainerService.HintSize="476,1486" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
