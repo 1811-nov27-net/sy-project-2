@@ -13,7 +13,6 @@
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="Config" Type="InArgument(njl:JObject)" />
-    <x:Property Name="webLogin" Type="OutArgument(ui:Browser)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
@@ -79,10 +78,33 @@
       <Variable x:TypeArguments="ss:SecureString" Name="assetPassword" />
       <Variable x:TypeArguments="x:String" Name="assetUsername" />
       <Variable x:TypeArguments="x:Boolean" Name="serverExploded" />
+      <Variable x:TypeArguments="x:String" Name="url" />
     </Sequence.Variables>
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Opening Website and logging in, as well as testing if Config was able to be passed.&quot; + vbCrLf +&#xA;Config(&quot;Username&quot;).ToString]" />
-    <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="testCredentials" DisplayName="Get Credential" sap2010:WorkflowViewState.IdRef="GetRobotCredential_1" Password="[assetPassword]" Username="[assetUsername]" />
-    <ui:OpenBrowser sap2010:Annotation.AnnotationText="Outputting this &quot;window&quot; as a datatype UiBrowser &quot;webLogin&quot; so that future &quot;Attach Window&quot; actions can refer to this initial window" BrowserType="IE" DisplayName="Open Browser" Hidden="False" sap2010:WorkflowViewState.IdRef="OpenBrowser_1" NewSession="True" Private="False" UiBrowser="[webLogin]" Url="http://training.openspan.com/login">
+    <ui:CommentOut DisplayName="Comment Out">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities">
+          <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="testCredentials" DisplayName="Get Credential" sap2010:WorkflowViewState.IdRef="GetRobotCredential_1" Password="[assetPassword]" Username="[assetUsername]" />
+          <sap2010:WorkflowViewState.IdRef>Sequence_8</sap2010:WorkflowViewState.IdRef>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap2010:WorkflowViewState.IdRef>CommentOut_3</sap2010:WorkflowViewState.IdRef>
+    </ui:CommentOut>
+    <ui:CommentOut DisplayName="Comment Out">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities">
+          <ui:GetRobotAsset TimeoutMS="{x:Null}" AssetName="OpenURL" DisplayName="Get Asset" sap2010:WorkflowViewState.IdRef="GetRobotAsset_1">
+            <ui:GetRobotAsset.Value>
+              <OutArgument x:TypeArguments="x:String">[url]</OutArgument>
+            </ui:GetRobotAsset.Value>
+          </ui:GetRobotAsset>
+          <sap2010:WorkflowViewState.IdRef>Sequence_9</sap2010:WorkflowViewState.IdRef>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap2010:WorkflowViewState.IdRef>CommentOut_4</sap2010:WorkflowViewState.IdRef>
+    </ui:CommentOut>
+    <ui:MessageBox Caption="{x:Null}" ChosenButton="{x:Null}" Buttons="Ok" DisplayName="Message Box" sap2010:WorkflowViewState.IdRef="MessageBox_2" Text="[&quot;Retrieved URL from Orchestrator Asset. Currently opening browser with URL defined in Process.&quot;]" TopMost="True" />
+    <ui:OpenBrowser UiBrowser="{x:Null}" sap2010:Annotation.AnnotationText="Outputting this &quot;window&quot; as a datatype UiBrowser &quot;webLogin&quot; so that future &quot;Attach Window&quot; actions can refer to this initial window" BrowserType="IE" DisplayName="Open Browser" Hidden="False" sap2010:WorkflowViewState.IdRef="OpenBrowser_1" NewSession="True" Private="False" Url="http://training.openspan.com/login">
       <ui:OpenBrowser.Body>
         <ActivityAction x:TypeArguments="x:Object">
           <ActivityAction.Argument>
@@ -151,12 +173,30 @@
         </ActivityAction>
       </ui:OpenBrowser.Body>
     </ui:OpenBrowser>
-    <sads:DebugSymbol.Symbol>d0dFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcT3BlbmluZyBVUkwgYW5kIExvZ2dpbmcgSW4ueGFtbCZNA5sBDgIBAVMFU/cBAgEqVAVU2QECASRVBZkBFgIBAlNcU/QBAgErVDtUTAIBKVTFAVTWAQIBJ1SqAVS7AQIBJVXyAlX+AgIBIlWDA1WnAwIBIVsLlgEWAgEDXA1gIgIBHGENlQESAgEEXosBXs4BAgEgXtkBXt8BAgEfXFVcZwIBHWEbYTQCAQVjEWYcAgEWaRGTARwCAQdkE2SlAgIBGWUTZaEBAgEXahNuIQIBE28TeSMCARJ6E34hAgEPfxOJASMCAQ6KARORAR4CAQqSAROSAbIBAgEIZE9kVgIBG2SlAWSTAgIBGmWEAWWeAQIBGGymAWzUAQIBFWqmAmrPAgIBFHymAXzUAQIBEXqlAnrOAgIBEI8BpgGPAdcBAgENjAE/jAFDAgEMjAEyjAE2AgELkgFqkgGvAQIBCQ==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0dFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcT3BlbmluZyBVUkwgYW5kIExvZ2dpbmcgSW4ueGFtbCVMA7EBDgIBAVMFU/cBAgEmVAVcFQIBJV0FaRUCASRqBWqZAgIBImsFrwEWAgECU1xT9AECASdqmgFqhwICASNrgQNrpQMCASFxC6wBFgIBA3INdiICARx3DasBEgIBBHSLAXTOAQIBIHTZAXTfAQIBH3JVcmcCAR13G3c0AgEFeRF8HAIBFn8RqQEcAgEHehN6pQICARl7E3uhAQIBF4ABE4QBIQIBE4UBE48BIwIBEpABE5QBIQIBD5UBE58BIwIBDqABE6cBHgIBCqgBE6gBsgECAQh6T3pWAgEbeqUBepMCAgEae4QBe54BAgEYggGmAYIB1AECARWAAaYCgAHPAgIBFJIBpgGSAdQBAgERkAGlApABzgICARClAaYBpQHXAQIBDaIBP6IBQwIBDKIBMqIBNgIBC6gBaqgBrwECAQk=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
       <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="733,64" />
-      <sap2010:ViewStateData Id="GetRobotCredential_1" sap:VirtualizedContainerService.HintSize="733,22" />
+      <sap2010:ViewStateData Id="GetRobotCredential_1" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="Sequence_8" sap:VirtualizedContainerService.HintSize="222,146">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="CommentOut_3" sap:VirtualizedContainerService.HintSize="733,224" />
+      <sap2010:ViewStateData Id="GetRobotAsset_1" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="222,146">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="CommentOut_4" sap:VirtualizedContainerService.HintSize="733,224" />
+      <sap2010:ViewStateData Id="MessageBox_2" sap:VirtualizedContainerService.HintSize="733,59" />
       <sap2010:ViewStateData Id="UiElementExists_1" sap:VirtualizedContainerService.HintSize="697,106" />
       <sap2010:ViewStateData Id="MessageBox_1" sap:VirtualizedContainerService.HintSize="314,59" />
       <sap2010:ViewStateData Id="TerminateWorkflow_1" sap:VirtualizedContainerService.HintSize="314,22" />
@@ -225,7 +265,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="755,1667">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="755,2232">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -233,7 +273,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Opening_URL_and_Logging_In_1" sap:VirtualizedContainerService.HintSize="795,1747" />
+      <sap2010:ViewStateData Id="Opening_URL_and_Logging_In_1" sap:VirtualizedContainerService.HintSize="795,2312" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

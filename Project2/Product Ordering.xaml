@@ -14,7 +14,6 @@
     <x:Property Name="dtOrders" Type="InArgument(sd:DataTable)" />
     <x:Property Name="productName" Type="OutArgument(x:String)" />
     <x:Property Name="productQuantity" Type="OutArgument(x:String)" />
-    <x:Property Name="webLogin" Type="InArgument(ui:Browser)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
@@ -118,7 +117,6 @@
                       <ui:InvokeWorkflowFile.Arguments>
                         <InArgument x:TypeArguments="x:String" x:Key="productName">[productName]</InArgument>
                         <InArgument x:TypeArguments="x:String" x:Key="productQuantity">[productQuantity]</InArgument>
-                        <InArgument x:TypeArguments="ui:Browser" x:Key="webLogin">[webLogin]</InArgument>
                         <OutArgument x:TypeArguments="x:String" x:Key="status">[status]</OutArgument>
                         <OutArgument x:TypeArguments="x:Boolean" x:Key="isSelectable">[isSelectable]</OutArgument>
                       </ui:InvokeWorkflowFile.Arguments>
@@ -140,7 +138,7 @@
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
-    <sads:DebugSymbol.Symbol>dz1FOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUHJvZHVjdCBPcmRlcmluZy54YW1sJEsDkAEOAgEBTTNNNgIBAlAFUIoBAgEyUQWOASACAQNQXFCHAQIBM1GgAVG0AQIBMVcLiwEWAgEEWA2KAR0CAQVYPlhKAgEvXhOHAR4CAQZjFWclAgEpaBVsJQIBI20VdB4CAR91FX0tAgESfhV+1wECAQx/FYYBHgIBB2VBZU4CAS1jvQFjxAECAStjWGNhAgEqakhqWAIBJ2ixAWi4AQIBJWhYaGICASRyQHJZAgEib0FvUgIBIHU8dUICAR57V3tlAgEcd1R3YQIBGnpQelgCARh1vQF12AECARd4WHhpAgEVeVN5XQIBE34tflcCARB+ygF+1AECAQ5+vAF+xAECAQ2EAT+EAUwCAQqBAUCBAUkCAQg=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>dz1FOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUHJvZHVjdCBPcmRlcmluZy54YW1sI0oDjgEOAgEBTDNMNgIBAk8FT4oBAgEwUAWMASACAQNPXE+HAQIBMVCgAVC0AQIBL1YLiQEWAgEEVw2IAR0CAQVXPldKAgEtXROFAR4CAQZiFWYlAgEnZxVrJQIBIWwVcx4CAR10FXstAgESfBV81wECAQx9FYQBHgIBB2RBZE4CAStivQFixAECASliWGJhAgEoaUhpWAIBJWexAWe4AQIBI2dYZ2ICASJxQHFZAgEgbkFuUgIBHnQ8dEICARx5V3llAgEadlR2YQIBGHhQeFgCARZ0vQF02AECARV3WHdpAgETfC18VwIBEHzKAXzUAQIBDny8AXzEAQIBDYIBP4IBTAIBCn9Af0kCAQg=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
