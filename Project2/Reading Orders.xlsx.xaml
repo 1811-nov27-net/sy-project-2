@@ -62,9 +62,19 @@
       <AssemblyReference>System.Xaml</AssemblyReference>
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
       <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Plugin.Workflow</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
   <Sequence sap2010:Annotation.AnnotationText="We are reading from two sheets in Orders.xlsx, &quot;Orders&quot; and &quot;Address&quot;, where &quot;Orders&quot; is the data table of products we are ordering from the website, and &quot;Address&quot; holds the values we are using for our shipping and billing details" DisplayName="Reading Orders.xlsx" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="productName" />
+      <Variable x:TypeArguments="x:Double" Name="productQuantity" />
+    </Sequence.Variables>
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Reading Orders.xlsx" />
     <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" WorkbookPath="Orders.xlsx">
       <ui:ExcelApplicationScope.Body>
@@ -106,8 +116,35 @@
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
+    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dtOrders]" DisplayName="For Each Row Adding Queue Items" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+      <ui:ForEachRow.Body>
+        <ActivityAction x:TypeArguments="sd:DataRow">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_4">
+            <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Product" DisplayName="Get Row Item Product Name" sap2010:WorkflowViewState.IdRef="GetRowItem_1" Row="[row]">
+              <ui:GetRowItem.Value>
+                <OutArgument x:TypeArguments="x:String">[productName]</OutArgument>
+              </ui:GetRowItem.Value>
+            </ui:GetRowItem>
+            <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Quantity" DisplayName="Get Row Item Product Quantity" sap2010:WorkflowViewState.IdRef="GetRowItem_2" Row="[row]">
+              <ui:GetRowItem.Value>
+                <OutArgument x:TypeArguments="x:Double">[productQuantity]</OutArgument>
+              </ui:GetRowItem.Value>
+            </ui:GetRowItem>
+            <ui:AddQueueItem ServiceBaseAddress="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="Adding Product Names and their respective Quantities to a Queue in Orchestrator" DisplayName="Add Queue Item" sap2010:WorkflowViewState.IdRef="AddQueueItem_1" Priority="Normal" QueueType="productQueue" Reference="[productName]">
+              <ui:AddQueueItem.ItemInformation>
+                <InArgument x:TypeArguments="x:String" x:Key="productName">[productName]</InArgument>
+                <InArgument x:TypeArguments="x:Double" x:Key="productQuantity">[productQuantity]</InArgument>
+              </ui:AddQueueItem.ItemInformation>
+            </ui:AddQueueItem>
+          </Sequence>
+        </ActivityAction>
+      </ui:ForEachRow.Body>
+    </ui:ForEachRow>
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_6" Text="Finished copying over data tables" />
-    <sads:DebugSymbol.Symbol>d0BFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUmVhZGluZyBPcmRlcnMueGxzeC54YW1sH0MDbw4CAQFEBUR0AgEiRQVdIAIBFV4FXpMBAgETXwVfogECARFgBWwgAgEEbQVtggECAQJEXERxAgEjRaABRa0BAgEhSwtaFgIBFl5cXpABAgEUX1xfnwECARJg/gJgkgMCARBmC2kWAgEFbVxtfwIBA0wNUiECARxTDVkhAgEXZw1nvwECAQtoDWjBAQIBBkw8TEgCAR9PE09CAgEeTLEBTLkBAgEdUzxTSQIBGlYTVkICARlTswFTvAECARhnuAFnvAECAQ9nPWdJAgENZ6IBZ6oBAgEMaLoBaL4BAgEKaD1oSgIBCGijAWisAQIBBw==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0BFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUmVhZGluZyBPcmRlcnMueGxzeC54YW1sL0kDlAEOAgEBTgVOdAIBOk8FZyACAS1oBWiTAQIBK2kFaaIBAgEpagV2IAIBHHcFkQEVAgEEkgEFkgGCAQIBAk5cTnECATtPoAFPrQECATlVC2QWAgEuaFxokAECASxpXGmfAQIBKmr+AmqSAwIBKHALcxYCAR13NndCAgEafQuOARYCAQWSAVySAX8CAQNWDVwhAgE0XQ1jIQIBL3ENcb8BAgEjcg1ywQECAR5+DYIBHQIBFIMBDYcBHQIBDogBDY0BHwIBBlY8VkgCATdZE1lCAgE2VrEBVrkBAgE1XTxdSQIBMmATYEICATFdswFdvAECATBxuAFxvAECASdxPXFJAgElcaIBcaoBAgEkcroBcr4BAgEicj1ySgIBIHKjAXKsAQIBH4ABOYABRgIBGH61AX68AQIBFn5QflkCARWFATmFAUoCARKDAboBgwHBAQIBEIMBUIMBWgIBD4gByAKIAdcCAgEMiAGvAogBvQICAQuKAUyKAVkCAQmLAVCLAWECAQc=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -140,8 +177,25 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="GetRowItem_1" sap:VirtualizedContainerService.HintSize="314,64" />
+      <sap2010:ViewStateData Id="GetRowItem_2" sap:VirtualizedContainerService.HintSize="314,64" />
+      <sap2010:ViewStateData Id="AddQueueItem_1" sap:VirtualizedContainerService.HintSize="314,22">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="336,354">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ForEachRow_1" sap:VirtualizedContainerService.HintSize="414,502" />
       <sap2010:ViewStateData Id="WriteLine_6" sap:VirtualizedContainerService.HintSize="414,61" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="436,1406">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="436,1948">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -149,7 +203,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Reading_Orders_xlsx_1" sap:VirtualizedContainerService.HintSize="476,1486" />
+      <sap2010:ViewStateData Id="Reading_Orders_xlsx_1" sap:VirtualizedContainerService.HintSize="476,1773" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
