@@ -1,22 +1,24 @@
-﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Reading_Config_txt"
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Emailing_Invoice"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
- xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
+ xmlns:ss="clr-namespace:System.Security;assembly=mscorlib"
  xmlns:ui="http://schemas.uipath.com/workflow/activities"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="Config" Type="OutArgument(njl:JObject)" />
+    <x:Property Name="dtOrders" Type="InArgument(sd:DataTable)" />
+    <x:Property Name="grandTotal" Type="InArgument(x:String)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap2010:WorkflowViewState.IdRef>Reading_Config_txt_1</sap2010:WorkflowViewState.IdRef>
+  <sap2010:WorkflowViewState.IdRef>Emailing_Invoice_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -40,8 +42,8 @@
       <x:String>System.Windows.Markup</x:String>
       <x:String>UiPath.Core</x:String>
       <x:String>UiPath.Core.Activities</x:String>
-      <x:String>Newtonsoft.Json.Linq</x:String>
-      <x:String>Newtonsoft.Json</x:String>
+      <x:String>System.Net</x:String>
+      <x:String>System.Xml.Serialization</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -62,43 +64,53 @@
       <AssemblyReference>System.Xaml</AssemblyReference>
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
       <AssemblyReference>UiPath.System.Activities</AssemblyReference>
-      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Plugin.Workflow</AssemblyReference>
       <AssemblyReference>System.ServiceModel</AssemblyReference>
       <AssemblyReference>UiPath.Excel</AssemblyReference>
       <AssemblyReference>UiPath.Mail</AssemblyReference>
       <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Reading Config.txt" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Emailing Invoice" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
-      <Variable x:TypeArguments="x:String" Name="configParams" />
+      <Variable x:TypeArguments="ss:SecureString" Name="assetEmailPassword" />
+      <Variable x:TypeArguments="x:String" Name="assetEmailAddress" />
+      <Variable x:TypeArguments="x:String" Name="secureEmailPassword" />
+      <Variable x:TypeArguments="x:String" Name="outputOrders" />
     </Sequence.Variables>
-    <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Reading Config.txt" />
-    <ui:ReadTextFile sap2010:Annotation.AnnotationText="Reading Config.txt file from local machine (no sensitive data is saved on here)" Content="[configParams]" DisplayName="Read Text File" FileName="Config.txt" sap2010:WorkflowViewState.IdRef="ReadTextFile_1" />
-    <ui:DeserializeJson x:TypeArguments="njl:JObject" sap2010:Annotation.AnnotationText="Deserializing JSON message read from Config.txt" DisplayName="Deserialize JSON string configParams" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_1" JsonObject="[Config]" JsonString="[configParams]" />
-    <ui:CommentOut DisplayName="Comment Out">
-      <ui:CommentOut.Body>
-        <Sequence DisplayName="Ignored Activities">
-          <ui:SetCredential TimeoutMS="{x:Null}" CredentialName="testCredentials" DisplayName="Set Credential" sap2010:WorkflowViewState.IdRef="SetCredential_1" Password="[Config(&quot;Password&quot;).ToString]" UserName="[Config(&quot;Username&quot;).ToString]" />
-          <sap2010:WorkflowViewState.IdRef>Sequence_3</sap2010:WorkflowViewState.IdRef>
-        </Sequence>
-      </ui:CommentOut.Body>
-      <sap2010:WorkflowViewState.IdRef>CommentOut_2</sap2010:WorkflowViewState.IdRef>
-    </ui:CommentOut>
-    <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="Finished reading and deserializing Config.txt, as well as setting Login Asset in Orchestrator" />
-    <sads:DebugSymbol.Symbol>dz9FOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUmVhZGluZyBDb25maWcudHh0LnhhbWwMSANaDgIBAUwFTHMCAQ5NBU2JAgIBCk4FTqgCAgEFTwVXFQIBBFgFWL4BAgECTFxMcAIBD03JAU3VAQIBDU2SAU2iAQIBC06VAk6lAgIBCE7/AU6JAgIBBlhcWLsBAgED</sads:DebugSymbol.Symbol>
+    <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Getting email credentials from Orchestrator, and sending email invoice" />
+    <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="personalEmail" DisplayName="Get Credential Email Info" sap2010:WorkflowViewState.IdRef="GetRobotCredential_1" Password="[assetEmailPassword]" Username="[assetEmailAddress]" />
+    <Assign sap2010:Annotation.AnnotationText="Once again, NOT SECURE" DisplayName="Assign email password (not secure at all)" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[secureEmailPassword]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[new System.Net.NetworkCredential(string.Empty, assetEmailPassword).Password]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:OutputDataTable DataTable="[dtOrders]" DisplayName="Output Data Table dtOrders" sap2010:WorkflowViewState.IdRef="OutputDataTable_1" Text="[outputOrders]" />
+    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="Sending this to myself" Body="[&quot;Here is your order invoice: &quot; + vbCrLf + vbCrLf +&#xD;&#xA;outputOrders + vbCrLf + &#xD;&#xA;&quot;Grand total: &quot; + grandTotal]" DisplayName="Send SMTP Mail Message" Email="[assetEmailAddress]" EnableSSL="True" From="[assetEmailAddress]" sap2010:WorkflowViewState.IdRef="SendMail_1" IsBodyHtml="False" Name="OpenSpan Product Company" Password="[secureEmailPassword]" Port="465" SecureConnection="SslOnConnect" Server="smtp.gmail.com" Subject="[&quot;Product Invoice &quot; + Date.Now.ToString]" To="[assetEmailAddress]">
+      <ui:SendMail.Files>
+        <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
+      </ui:SendMail.Files>
+    </ui:SendMail>
+    <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="Sent email invoice!" />
+    <sads:DebugSymbol.Symbol>dz1FOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcRW1haWxpbmcgSW52b2ljZS54YW1sGUsDZA4CAQFSBVKnAQIBIlMFU+sBAgEcVAVbDgIBF1wFXKUBAgESXQVhEwIBBGIFYnQCAQJSXFKkAQIBI1M7U0oCASFT0wFT6AECAR9TswFTyQECAR1ZMFl9AgEaVjFWRgIBGFySAVyiAQIBFVwjXC8CARNdnwVdtAUCARBdmwFdrQICAQ9d5wRdmwUCAQ5dhQNdmgMCAQxd2QJd7gICAQpdoQRdpgQCAQldzgRd3gQCAQhdhARdmwQCAQZd4ANd+gMCAQViXGJxAgED</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="416,61" />
-      <sap2010:ViewStateData Id="ReadTextFile_1" sap:VirtualizedContainerService.HintSize="416,59">
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="314,61" />
+      <sap2010:ViewStateData Id="GetRobotCredential_1" sap:VirtualizedContainerService.HintSize="314,22" />
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="314,60">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="DeserializeJson`1_1" sap:VirtualizedContainerService.HintSize="416,60">
+      <sap2010:ViewStateData Id="OutputDataTable_1" sap:VirtualizedContainerService.HintSize="314,22" />
+      <sap2010:ViewStateData Id="SendMail_1" sap:VirtualizedContainerService.HintSize="314,145">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -107,24 +119,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="SetCredential_1" sap:VirtualizedContainerService.HintSize="200,22" />
-      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="222,146">
+      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="314,61" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="336,695">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="CommentOut_2" sap:VirtualizedContainerService.HintSize="416,224" />
-      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="416,61" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="438,749">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-      </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Reading_Config_txt_1" sap:VirtualizedContainerService.HintSize="478,829" />
+      <sap2010:ViewStateData Id="Emailing_Invoice_1" sap:VirtualizedContainerService.HintSize="376,815" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

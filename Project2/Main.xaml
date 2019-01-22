@@ -73,6 +73,8 @@
       <Variable x:TypeArguments="sd:DataTable" Name="dtOrders" />
       <Variable x:TypeArguments="sd:DataTable" Name="dtAddress" />
       <Variable x:TypeArguments="sd:DataTable" Name="dtInvoice" />
+      <Variable x:TypeArguments="x:String" Name="grandTotal" />
+      <Variable x:TypeArguments="ui:Browser" Name="orderPlaced" />
     </Flowchart.Variables>
     <Flowchart.StartNode>
       <FlowStep x:Name="__ReferenceID0" sap2010:WorkflowViewState.IdRef="FlowStep_2">
@@ -144,13 +146,57 @@
                         <Sequence sap2010:Annotation.AnnotationText="After adding items to our cart, we next look at our cart, scrape the relevant data (i.e. price, total, for invoice), confirm our order, enter in Billing and Shipping address, then payment info, then copying the Order# to write to the excel sheet and invoice" DisplayName="Scraping Invoice Data" sap2010:WorkflowViewState.IdRef="Sequence_5">
                           <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_6" UnSafe="False" WorkflowFileName="Getting Invoice Data.xaml">
                             <ui:InvokeWorkflowFile.Arguments>
-                              <InArgument x:TypeArguments="njl:JObject" x:Key="Config">[Config]</InArgument>
-                              <InArgument x:TypeArguments="sd:DataTable" x:Key="dtOrders">[dtOrders]</InArgument>
-                              <InArgument x:TypeArguments="sd:DataTable" x:Key="dtAddress">[dtAddress]</InArgument>
-                              <OutArgument x:TypeArguments="sd:DataTable" x:Key="dtInvoice">[dtInvoice]</OutArgument>
+                              <OutArgument x:TypeArguments="sd:DataTable" x:Key="dtOrders">[dtOrders]</OutArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="grandTotal">[grandTotal]</OutArgument>
                             </ui:InvokeWorkflowFile.Arguments>
                           </ui:InvokeWorkflowFile>
                         </Sequence>
+                        <FlowStep.Next>
+                          <FlowStep x:Name="__ReferenceID5" sap2010:WorkflowViewState.IdRef="FlowStep_7">
+                            <Sequence sap2010:Annotation.AnnotationText="Going through the process of ordering items via webpage" DisplayName="Filling out Address" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                              <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_7" UnSafe="False" WorkflowFileName="Filling Address.xaml">
+                                <ui:InvokeWorkflowFile.Arguments>
+                                  <InArgument x:TypeArguments="njl:JObject" x:Key="Config">[Config]</InArgument>
+                                  <InArgument x:TypeArguments="sd:DataTable" x:Key="dtAddress">[dtAddress]</InArgument>
+                                </ui:InvokeWorkflowFile.Arguments>
+                              </ui:InvokeWorkflowFile>
+                            </Sequence>
+                            <FlowStep.Next>
+                              <FlowStep x:Name="__ReferenceID6" sap2010:WorkflowViewState.IdRef="FlowStep_8">
+                                <Sequence sap2010:Annotation.AnnotationText="Filling out payment info, as well as saving order# and writing it to Orders.xlsx" DisplayName="Filling out Payment info" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                                  <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_8" UnSafe="False" WorkflowFileName="Filling Payment and saving Order#.xaml">
+                                    <ui:InvokeWorkflowFile.Arguments>
+                                      <InArgument x:TypeArguments="njl:JObject" x:Key="Config">[Config]</InArgument>
+                                      <OutArgument x:TypeArguments="ui:Browser" x:Key="orderPlaced">[orderPlaced]</OutArgument>
+                                    </ui:InvokeWorkflowFile.Arguments>
+                                  </ui:InvokeWorkflowFile>
+                                </Sequence>
+                                <FlowStep.Next>
+                                  <FlowStep x:Name="__ReferenceID7" sap2010:WorkflowViewState.IdRef="FlowStep_9">
+                                    <Sequence sap2010:Annotation.AnnotationText="Creating Invoice message body and sending it to provided email in Orchestrator" DisplayName="Emailing Invoice" sap2010:WorkflowViewState.IdRef="Sequence_8">
+                                      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke Workflow File" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_9" UnSafe="False" WorkflowFileName="Emailing Invoice.xaml">
+                                        <ui:InvokeWorkflowFile.Arguments>
+                                          <InArgument x:TypeArguments="sd:DataTable" x:Key="dtOrders">[dtOrders]</InArgument>
+                                          <InArgument x:TypeArguments="x:String" x:Key="grandTotal">[grandTotal]</InArgument>
+                                        </ui:InvokeWorkflowFile.Arguments>
+                                      </ui:InvokeWorkflowFile>
+                                    </Sequence>
+                                    <FlowStep.Next>
+                                      <FlowStep x:Name="__ReferenceID9" sap2010:WorkflowViewState.IdRef="FlowStep_11">
+                                        <ui:CloseTab Browser="[orderPlaced]" DisplayName="Close Tab" sap2010:WorkflowViewState.IdRef="CloseTab_1" />
+                                        <FlowStep.Next>
+                                          <FlowStep x:Name="__ReferenceID8" sap2010:WorkflowViewState.IdRef="FlowStep_10">
+                                            <ui:MessageBox ChosenButton="{x:Null}" Buttons="Ok" Caption="Finished process." DisplayName="Message Box" sap2010:WorkflowViewState.IdRef="MessageBox_1" Text="[&quot;Process complete!&quot;]" TopMost="True" />
+                                          </FlowStep>
+                                        </FlowStep.Next>
+                                      </FlowStep>
+                                    </FlowStep.Next>
+                                  </FlowStep>
+                                </FlowStep.Next>
+                              </FlowStep>
+                            </FlowStep.Next>
+                          </FlowStep>
+                        </FlowStep.Next>
                       </FlowStep>
                     </FlowStep.Next>
                   </FlowStep>
@@ -166,7 +212,12 @@
     <x:Reference>__ReferenceID2</x:Reference>
     <x:Reference>__ReferenceID3</x:Reference>
     <x:Reference>__ReferenceID4</x:Reference>
-    <sads:DebugSymbol.Symbol>dzFFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcTWFpbi54YW1sKkYDqgEPAgEBTwlWFAIBNFkNaBgCAR1rEYIBHAIBEoUBFY0BIAIBDZABGZkBJAIBAlALVCMCATdVC1XrAQIBNV4PYycCAS5kD2SvAQIBKWUPZXcCASZmD2ayAQIBIWcPZ3gCAR5tFXMgAgEYgAEVgAGgAQIBFnsZe5cBAgEThgEXjAEvAgEOkQEbmAEzAgEDUklSUQIBOVC3AVDQAQIBOFW/AVXoAQIBNmBQYFoCATJhUWFcAgEwXrsBXtUBAgEvZJ4BZKwBAgEsZC1kOQIBKmVmZXQCASdmoAFmrwECASRmLWY6AgEiZ2ZndQIBH24Xci8CARmAAWyAAZ0BAgEXe4cBe5QBAgEUiAFXiAFhAgEQhgHDAYYB2gECAQ+UAVuUAWUCAQuVAVyVAWcCAQmTAViTAWACAQeWAV2WAWgCAQWRAccBkQHiAQIBBHBUcFwCARtuwwFu5AECARo=</sads:DebugSymbol.Symbol>
+    <x:Reference>__ReferenceID5</x:Reference>
+    <x:Reference>__ReferenceID6</x:Reference>
+    <x:Reference>__ReferenceID7</x:Reference>
+    <x:Reference>__ReferenceID8</x:Reference>
+    <x:Reference>__ReferenceID9</x:Reference>
+    <sads:DebugSymbol.Symbol>dzFFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcTWFpbi54YW1sPEYD3QEPAgEBUQlYFAIBS1sNahgCATRtEYQBHAIBKYcBFY8BIAIBJJIBGZkBJAIBHZwBHaMBKAIBFqYBIa0BLAIBD7ABJbcBMAIBCLoBKboBlQECAQW9AS29Af4BAgECUgtWIwIBTlcLV+sBAgFMYA9lJwIBRWYPZq8BAgFAZw9ndwIBPWgPaLIBAgE4aQ9peAIBNW8VdSACAS+CARWCAaABAgEtfRl9lwECASqIAReOAS8CASWTARuYATMCAR6dAR+iATcCARenASOsATsCARCxASe2AT8CAQm6AT66AU0CAQa9AWm9AXwCAQS9AcsBvQHsAQIBA1RJVFECAVBStwFS0AECAU9XvwFX6AECAU1iUGJaAgFJY1FjXAIBR2C7AWDVAQIBRmaeAWasAQIBQ2YtZjkCAUFnZmd0AgE+aKABaK8BAgE7aC1oOgIBOWlmaXUCATZwF3QvAgEwggFsggGdAQIBLn2HAX2UAQIBK4oBV4oBYQIBJ4gBwwGIAdoBAgEmlQFclQFmAgEilgFalgFmAgEgkwHHAZMB4gECAR+gAWCgAWsCARufAVyfAWQCARmdAcsBnQHhAQIBGKoBZaoBcgIBFKkBYKkBaAIBEqcBzwGnAfcBAgERswFnswFxAgENtAFltAFxAgELsQHTAbEB6gECAQpyVHJcAgEycMMBcOQBAgEx</sads:DebugSymbol.Symbol>
   </Flowchart>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -234,11 +285,96 @@
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="InvokeWorkflowFile_6" sap:VirtualizedContainerService.HintSize="314,87" />
-      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="336,211">
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="200,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_7" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="Sequence_6" sap:VirtualizedContainerService.HintSize="200,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_8" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="200,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_9" sap:VirtualizedContainerService.HintSize="314,87" />
+      <sap2010:ViewStateData Id="Sequence_8" sap:VirtualizedContainerService.HintSize="200,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="CloseTab_1" sap:VirtualizedContainerService.HintSize="200,22">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="MessageBox_1" sap:VirtualizedContainerService.HintSize="200,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="FlowStep_10">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">950,124.5</av:Point>
+            <av:Size x:Key="ShapeSize">200,51</av:Size>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="FlowStep_11">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">660,309</av:Point>
+            <av:Size x:Key="ShapeSize">200,22</av:Size>
+            <av:PointCollection x:Key="ConnectorLocation">860,320 890,320 890,150 950,150</av:PointCollection>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="FlowStep_9">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">660,214.02</av:Point>
+            <av:Size x:Key="ShapeSize">200,51</av:Size>
+            <av:PointCollection x:Key="ConnectorLocation">760,265.02 760,309</av:PointCollection>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="FlowStep_8">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">660,124.5</av:Point>
+            <av:Size x:Key="ShapeSize">200,51</av:Size>
+            <av:PointCollection x:Key="ConnectorLocation">760,175.5 760,214.02</av:PointCollection>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="FlowStep_7">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">360,304.5</av:Point>
+            <av:Size x:Key="ShapeSize">200,51</av:Size>
+            <av:PointCollection x:Key="ConnectorLocation">560,330 590,330 590,150 660,150</av:PointCollection>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
@@ -247,6 +383,7 @@
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <av:Point x:Key="ShapeLocation">360,214.02</av:Point>
             <av:Size x:Key="ShapeSize">200,51</av:Size>
+            <av:PointCollection x:Key="ConnectorLocation">460,265.02 460,304.5</av:PointCollection>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
@@ -297,7 +434,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="1330,756" />
+      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="1330,716" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

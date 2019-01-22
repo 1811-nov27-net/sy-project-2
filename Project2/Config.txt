@@ -6,6 +6,6 @@
  "cardNumber":"4532 5498 4490 5013",
  "cardType":"Visa",
  "cvv":"048",
- "expMonth":"07",
- "expYear":"20"
+ "expMonth":"July",
+ "expYear":"2020"
  }

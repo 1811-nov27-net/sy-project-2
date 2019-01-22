@@ -2,7 +2,6 @@
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
- xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
@@ -12,10 +11,8 @@
  xmlns:ui="http://schemas.uipath.com/workflow/activities"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
-    <x:Property Name="Config" Type="InArgument(njl:JObject)" />
-    <x:Property Name="dtOrders" Type="InArgument(sd:DataTable)" />
-    <x:Property Name="dtAddress" Type="InArgument(sd:DataTable)" />
-    <x:Property Name="dtInvoice" Type="OutArgument(sd:DataTable)" />
+    <x:Property Name="dtOrders" Type="OutArgument(sd:DataTable)" />
+    <x:Property Name="grandTotal" Type="OutArgument(x:String)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
@@ -81,7 +78,7 @@
       <Variable x:TypeArguments="x:String" Name="productName" />
       <Variable x:TypeArguments="x:Double" Name="productQuantity" />
       <Variable x:TypeArguments="x:String" Name="productStatus" />
-      <Variable x:TypeArguments="x:Int32" Default="1" Name="counter" />
+      <Variable x:TypeArguments="x:Int32" Default="0" Name="counter" />
       <Variable x:TypeArguments="x:String" Name="itemPrice" />
       <Variable x:TypeArguments="x:String" Name="totalPrice" />
       <Variable x:TypeArguments="x:String" Name="outputInvoice" />
@@ -114,7 +111,15 @@
               </ui:Click.Target>
             </ui:Click>
             <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="Saving price history to data table..." />
-            <ui:BuildDataTable DataTable="[dtInvoice]" DisplayName="Build Data Table for Invoice" sap2010:WorkflowViewState.IdRef="BuildDataTable_2" TableInfo="&lt;NewDataSet&gt;&#xD;&#xA;  &lt;xs:schema id=&quot;NewDataSet&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&#xD;&#xA;    &lt;xs:element name=&quot;NewDataSet&quot; msdata:IsDataSet=&quot;true&quot; msdata:MainDataTable=&quot;TableName&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&#xD;&#xA;      &lt;xs:complexType&gt;&#xD;&#xA;        &lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&#xD;&#xA;          &lt;xs:element name=&quot;TableName&quot;&gt;&#xD;&#xA;            &lt;xs:complexType&gt;&#xD;&#xA;              &lt;xs:sequence&gt;&#xD;&#xA;                &lt;xs:element name=&quot;Product&quot; minOccurs=&quot;0&quot;&gt;&#xD;&#xA;                  &lt;xs:simpleType&gt;&#xD;&#xA;                    &lt;xs:restriction base=&quot;xs:string&quot;&gt;&#xD;&#xA;                      &lt;xs:maxLength value=&quot;100&quot; /&gt;&#xD;&#xA;                    &lt;/xs:restriction&gt;&#xD;&#xA;                  &lt;/xs:simpleType&gt;&#xD;&#xA;                &lt;/xs:element&gt;&#xD;&#xA;                &lt;xs:element name=&quot;UnitPrice&quot; minOccurs=&quot;0&quot;&gt;&#xD;&#xA;                  &lt;xs:simpleType&gt;&#xD;&#xA;                    &lt;xs:restriction base=&quot;xs:string&quot;&gt;&#xD;&#xA;                      &lt;xs:maxLength value=&quot;100&quot; /&gt;&#xD;&#xA;                    &lt;/xs:restriction&gt;&#xD;&#xA;                  &lt;/xs:simpleType&gt;&#xD;&#xA;                &lt;/xs:element&gt;&#xD;&#xA;                &lt;xs:element name=&quot;Quantity&quot; type=&quot;xs:double&quot; minOccurs=&quot;0&quot; /&gt;&#xD;&#xA;                &lt;xs:element name=&quot;TotalPrice&quot; minOccurs=&quot;0&quot;&gt;&#xD;&#xA;                  &lt;xs:simpleType&gt;&#xD;&#xA;                    &lt;xs:restriction base=&quot;xs:string&quot;&gt;&#xD;&#xA;                      &lt;xs:maxLength value=&quot;100&quot; /&gt;&#xD;&#xA;                    &lt;/xs:restriction&gt;&#xD;&#xA;                  &lt;/xs:simpleType&gt;&#xD;&#xA;                &lt;/xs:element&gt;&#xD;&#xA;              &lt;/xs:sequence&gt;&#xD;&#xA;            &lt;/xs:complexType&gt;&#xD;&#xA;          &lt;/xs:element&gt;&#xD;&#xA;        &lt;/xs:choice&gt;&#xD;&#xA;      &lt;/xs:complexType&gt;&#xD;&#xA;    &lt;/xs:element&gt;&#xD;&#xA;  &lt;/xs:schema&gt;&#xD;&#xA;&lt;/NewDataSet&gt;" />
+            <ui:CommentOut DisplayName="Comment Out">
+              <ui:CommentOut.Body>
+                <Sequence DisplayName="Ignored Activities">
+                  <ui:BuildDataTable DataTable="[dtInvoice]" DisplayName="Build Data Table for Invoice" sap2010:WorkflowViewState.IdRef="BuildDataTable_2" TableInfo="&lt;NewDataSet&gt;&#xA;  &lt;xs:schema id=&quot;NewDataSet&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&#xA;    &lt;xs:element name=&quot;NewDataSet&quot; msdata:IsDataSet=&quot;true&quot; msdata:MainDataTable=&quot;TableName&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&#xA;      &lt;xs:complexType&gt;&#xA;        &lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&#xA;          &lt;xs:element name=&quot;TableName&quot;&gt;&#xA;            &lt;xs:complexType&gt;&#xA;              &lt;xs:sequence&gt;&#xA;                &lt;xs:element name=&quot;Product&quot; minOccurs=&quot;0&quot;&gt;&#xA;                  &lt;xs:simpleType&gt;&#xA;                    &lt;xs:restriction base=&quot;xs:string&quot;&gt;&#xA;                      &lt;xs:maxLength value=&quot;100&quot; /&gt;&#xA;                    &lt;/xs:restriction&gt;&#xA;                  &lt;/xs:simpleType&gt;&#xA;                &lt;/xs:element&gt;&#xA;                &lt;xs:element name=&quot;UnitPrice&quot; minOccurs=&quot;0&quot;&gt;&#xA;                  &lt;xs:simpleType&gt;&#xA;                    &lt;xs:restriction base=&quot;xs:string&quot;&gt;&#xA;                      &lt;xs:maxLength value=&quot;100&quot; /&gt;&#xA;                    &lt;/xs:restriction&gt;&#xA;                  &lt;/xs:simpleType&gt;&#xA;                &lt;/xs:element&gt;&#xA;                &lt;xs:element name=&quot;Quantity&quot; type=&quot;xs:double&quot; minOccurs=&quot;0&quot; /&gt;&#xA;                &lt;xs:element name=&quot;TotalPrice&quot; minOccurs=&quot;0&quot;&gt;&#xA;                  &lt;xs:simpleType&gt;&#xA;                    &lt;xs:restriction base=&quot;xs:string&quot;&gt;&#xA;                      &lt;xs:maxLength value=&quot;100&quot; /&gt;&#xA;                    &lt;/xs:restriction&gt;&#xA;                  &lt;/xs:simpleType&gt;&#xA;                &lt;/xs:element&gt;&#xA;              &lt;/xs:sequence&gt;&#xA;            &lt;/xs:complexType&gt;&#xA;          &lt;/xs:element&gt;&#xA;        &lt;/xs:choice&gt;&#xA;      &lt;/xs:complexType&gt;&#xA;    &lt;/xs:element&gt;&#xA;  &lt;/xs:schema&gt;&#xA;&lt;/NewDataSet&gt;" />
+                  <sap2010:WorkflowViewState.IdRef>Sequence_13</sap2010:WorkflowViewState.IdRef>
+                </Sequence>
+              </ui:CommentOut.Body>
+              <sap2010:WorkflowViewState.IdRef>CommentOut_5</sap2010:WorkflowViewState.IdRef>
+            </ui:CommentOut>
             <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_2" WorkbookPath="ProductOrders.xlsx">
               <ui:ExcelApplicationScope.Body>
                 <ActivityAction x:TypeArguments="ui:WorkbookApplication">
@@ -129,135 +134,144 @@
                         </InArgument>
                       </ui:ExcelReadRange.Range>
                     </ui:ExcelReadRange>
-                    <ui:ForEachRow CurrentIndex="{x:Null}" sap2010:Annotation.AnnotationText="Scrape product name, price per unit, quantity, and total price to add to excel sheet to create invoice" DataTable="[dtOrders]" DisplayName="For Each Row in Products" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
-                      <ui:ForEachRow.Body>
-                        <ActivityAction x:TypeArguments="sd:DataRow">
-                          <ActivityAction.Argument>
-                            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
-                          </ActivityAction.Argument>
-                          <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_3">
-                            <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Product" DisplayName="Get Row Item Product Name" sap2010:WorkflowViewState.IdRef="GetRowItem_1" Row="[row]">
-                              <ui:GetRowItem.Value>
-                                <OutArgument x:TypeArguments="x:String">[productName]</OutArgument>
-                              </ui:GetRowItem.Value>
-                            </ui:GetRowItem>
-                            <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Quantity" DisplayName="Get Row Item Product Quantity" sap2010:WorkflowViewState.IdRef="GetRowItem_2" Row="[row]">
-                              <ui:GetRowItem.Value>
-                                <OutArgument x:TypeArguments="x:Double">[productQuantity]</OutArgument>
-                              </ui:GetRowItem.Value>
-                            </ui:GetRowItem>
-                            <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Status" DisplayName="Get Row Item Product Status" sap2010:WorkflowViewState.IdRef="GetRowItem_3" Row="[row]">
-                              <ui:GetRowItem.Value>
-                                <OutArgument x:TypeArguments="x:String">[productStatus]</OutArgument>
-                              </ui:GetRowItem.Value>
-                            </ui:GetRowItem>
-                            <If Condition="[productStatus = &quot;Succeeded&quot;]" DisplayName="If Product Status is Success or Fail" sap2010:WorkflowViewState.IdRef="If_1">
-                              <If.Then>
-                                <Sequence sap2010:WorkflowViewState.IdRef="Sequence_5">
-                                  <ui:AnchorBase AnchorPosition="Left" DisplayName="Anchor Base" sap2010:WorkflowViewState.IdRef="AnchorBase_1">
-                                    <ui:AnchorBase.Action>
-                                      <ActivityAction x:TypeArguments="ui:Anchor">
-                                        <ActivityAction.Argument>
-                                          <DelegateInArgument x:TypeArguments="ui:Anchor" Name="ContextAnchor" />
-                                        </ActivityAction.Argument>
-                                        <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text Item Price" sap2010:WorkflowViewState.IdRef="GetValue_1">
-                                          <ui:GetValue.Target>
-                                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="973e1c12062562c8244be04f1601f2c8" Selector="[&quot;&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl aaname='$*' parentid='table_number&quot;+counter.ToString+&quot;' tag='SPAN' /&gt;&quot;]" WaitForReady="INTERACTIVE" />
-                                          </ui:GetValue.Target>
-                                          <ui:GetValue.Value>
-                                            <OutArgument x:TypeArguments="x:String">[itemPrice]</OutArgument>
-                                          </ui:GetValue.Value>
-                                        </ui:GetValue>
-                                      </ActivityAction>
-                                    </ui:AnchorBase.Action>
-                                    <ui:AnchorBase.AnchorProvider>
-                                      <ui:WaitUiElementAppear FoundElement="{x:Null}" DisplayName="Find Element 'B'" sap2010:WorkflowViewState.IdRef="WaitUiElementAppear_1" WaitActive="False" WaitVisible="False">
-                                        <ui:WaitUiElementAppear.Target>
-                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="5486908e02dc8ea0349208f9c99c11d3" Selector="[&quot;&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl aaname='&quot;+productName+&quot;' idx='1' /&gt;&lt;webctrl parentid='table_number*' tag='B' /&gt;&quot;]" WaitForReady="INTERACTIVE" />
-                                        </ui:WaitUiElementAppear.Target>
-                                      </ui:WaitUiElementAppear>
-                                    </ui:AnchorBase.AnchorProvider>
-                                  </ui:AnchorBase>
-                                  <ui:AnchorBase AnchorPosition="Auto" DisplayName="Anchor Base" sap2010:WorkflowViewState.IdRef="AnchorBase_2">
-                                    <ui:AnchorBase.Action>
-                                      <ActivityAction x:TypeArguments="ui:Anchor">
-                                        <ActivityAction.Argument>
-                                          <DelegateInArgument x:TypeArguments="ui:Anchor" Name="ContextAnchor" />
-                                        </ActivityAction.Argument>
-                                        <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text Item Total" sap2010:WorkflowViewState.IdRef="GetValue_2">
-                                          <ui:GetValue.Target>
-                                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="064bedeb87a91cc00a023f4acf0f0414" Selector="[&quot;&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='product_subtotal&quot;+counter.ToString+&quot;' tag='SPAN' /&gt;&quot;]" WaitForReady="INTERACTIVE" />
-                                          </ui:GetValue.Target>
-                                          <ui:GetValue.Value>
-                                            <OutArgument x:TypeArguments="x:String">[totalPrice]</OutArgument>
-                                          </ui:GetValue.Value>
-                                        </ui:GetValue>
-                                      </ActivityAction>
-                                    </ui:AnchorBase.Action>
-                                    <ui:AnchorBase.AnchorProvider>
-                                      <ui:WaitUiElementAppear FoundElement="{x:Null}" DisplayName="Find Element 'B'" sap2010:WorkflowViewState.IdRef="WaitUiElementAppear_2" WaitActive="False" WaitVisible="False">
-                                        <ui:WaitUiElementAppear.Target>
-                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="5486908e02dc8ea0349208f9c99c11d3" Selector="[&quot;&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl aaname='&quot;+productName+&quot;' idx='1' /&gt;&lt;webctrl parentid='table_number*' tag='B' /&gt;&quot;]" WaitForReady="INTERACTIVE" />
-                                        </ui:WaitUiElementAppear.Target>
-                                      </ui:WaitUiElementAppear>
-                                    </ui:AnchorBase.AnchorProvider>
-                                  </ui:AnchorBase>
-                                  <ui:AddDataRow DataRow="{x:Null}" sap2010:Annotation.AnnotationText="Adding relevant row data to the Invoice data table" ArrayRow="[{productName, itemPrice, productQuantity, totalPrice}]" DataTable="[dtInvoice]" DisplayName="Add Data Row" sap2010:WorkflowViewState.IdRef="AddDataRow_1" />
+                    <ui:CommentOut DisplayName="Comment Out" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+                      <ui:CommentOut.Body>
+                        <Sequence DisplayName="Ignored Activities" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                          <ui:ForEachRow CurrentIndex="{x:Null}" sap2010:Annotation.AnnotationText="Simply reading through the data table; if the product status is success, we increase our loop counter by 1" DataTable="[dtOrders]" DisplayName="For Each Row in Products" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+                            <ui:ForEachRow.Body>
+                              <ActivityAction x:TypeArguments="sd:DataRow">
+                                <ActivityAction.Argument>
+                                  <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                                </ActivityAction.Argument>
+                                <Sequence DisplayName="Body" sap2010:WorkflowViewState.IdRef="Sequence_3">
+                                  <ui:GetRowItem Column="{x:Null}" ColumnIndex="{x:Null}" ColumnName="Status" DisplayName="Get Row Item Product Status" sap2010:WorkflowViewState.IdRef="GetRowItem_3" Row="[row]">
+                                    <ui:GetRowItem.Value>
+                                      <OutArgument x:TypeArguments="x:String">[productStatus]</OutArgument>
+                                    </ui:GetRowItem.Value>
+                                  </ui:GetRowItem>
+                                  <If Condition="[productStatus = &quot;Succeeded&quot;]" DisplayName="If Product Status is Success or Fail" sap2010:WorkflowViewState.IdRef="If_1">
+                                    <If.Then>
+                                      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_5">
+                                        <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
+                                          <Assign.To>
+                                            <OutArgument x:TypeArguments="x:Int32">[counter]</OutArgument>
+                                          </Assign.To>
+                                          <Assign.Value>
+                                            <InArgument x:TypeArguments="x:Int32">[counter + 1]</InArgument>
+                                          </Assign.Value>
+                                        </Assign>
+                                      </Sequence>
+                                    </If.Then>
+                                    <If.Else>
+                                      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_6" />
+                                    </If.Else>
+                                  </If>
                                 </Sequence>
-                              </If.Then>
-                              <If.Else>
-                                <Sequence sap2010:WorkflowViewState.IdRef="Sequence_6" />
-                              </If.Else>
-                            </If>
-                            <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Int32">[counter]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Int32">[counter + 1]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                          </Sequence>
-                        </ActivityAction>
-                      </ui:ForEachRow.Body>
-                    </ui:ForEachRow>
+                              </ActivityAction>
+                            </ui:ForEachRow.Body>
+                          </ui:ForEachRow>
+                        </Sequence>
+                      </ui:CommentOut.Body>
+                    </ui:CommentOut>
+                    <ui:CommentOut DisplayName="Comment Out" sap2010:WorkflowViewState.IdRef="CommentOut_2">
+                      <ui:CommentOut.Body>
+                        <Sequence DisplayName="Ignored Activities" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                          <While sap2010:Annotation.AnnotationText="Collect X amount of items from the cart table in this While loop" sap2010:WorkflowViewState.IdRef="While_1" Condition="[counter &lt;&gt; 0]">
+                            <Sequence sap2010:WorkflowViewState.IdRef="Sequence_8">
+                              <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_6" Text="[counter.ToString]" />
+                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text Product Name" sap2010:WorkflowViewState.IdRef="GetValue_3">
+                                <ui:GetValue.Target>
+                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="5486908e02dc8ea0349208f9c99c11d3" Selector="[&quot;&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl parentid='table_number&quot;+counter.ToString+&quot;' aaname='*' idx='2' /&gt;&quot;]" WaitForReady="INTERACTIVE" />
+                                </ui:GetValue.Target>
+                                <ui:GetValue.Value>
+                                  <OutArgument x:TypeArguments="x:String">[productName]</OutArgument>
+                                </ui:GetValue.Value>
+                              </ui:GetValue>
+                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text Unit Price" sap2010:WorkflowViewState.IdRef="GetValue_4">
+                                <ui:GetValue.Target>
+                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="973e1c12062562c8244be04f1601f2c8" Selector="[&quot;&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl aaname='$*' parentid='table_number&quot;+counter.ToString+&quot;' idx='2' /&gt;&quot;]" WaitForReady="INTERACTIVE" />
+                                </ui:GetValue.Target>
+                                <ui:GetValue.Value>
+                                  <OutArgument x:TypeArguments="x:String">[itemPrice]</OutArgument>
+                                </ui:GetValue.Value>
+                              </ui:GetValue>
+                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text Quantity" sap2010:WorkflowViewState.IdRef="GetValue_5">
+                                <ui:GetValue.Target>
+                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="96246313bcfc6e1b57cd069a9f45c1cf" Selector="[&quot;&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='product_quantity&quot;+counter.ToString+&quot;' parentid='table_number&quot;+counter.ToString+&quot;' /&gt;&quot;]" WaitForReady="INTERACTIVE" />
+                                </ui:GetValue.Target>
+                                <ui:GetValue.Value>
+                                  <OutArgument x:TypeArguments="x:Double">[productQuantity]</OutArgument>
+                                </ui:GetValue.Value>
+                              </ui:GetValue>
+                              <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text TotalCost" sap2010:WorkflowViewState.IdRef="GetValue_6">
+                                <ui:GetValue.Target>
+                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="064bedeb87a91cc00a023f4acf0f0414" Selector="[&quot;&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='product_subtotal&quot;+counter.ToString+&quot;' aaname='$*' /&gt;&quot;]" WaitForReady="INTERACTIVE" />
+                                </ui:GetValue.Target>
+                                <ui:GetValue.Value>
+                                  <OutArgument x:TypeArguments="x:String">[totalPrice]</OutArgument>
+                                </ui:GetValue.Value>
+                              </ui:GetValue>
+                              <ui:AddDataRow DataRow="{x:Null}" ArrayRow="[{productName, itemPrice, productQuantity, totalPrice}]" DataTable="[dtInvoice]" DisplayName="Add Data Row" sap2010:WorkflowViewState.IdRef="AddDataRow_2" />
+                              <Assign sap2010:WorkflowViewState.IdRef="Assign_2">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Int32">[counter]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Int32">[counter - 1]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                            </Sequence>
+                          </While>
+                        </Sequence>
+                      </ui:CommentOut.Body>
+                    </ui:CommentOut>
                   </Sequence>
                 </ActivityAction>
               </ui:ExcelApplicationScope.Body>
             </ui:ExcelApplicationScope>
+            <ui:GetValue ContinueOnError="{x:Null}" DisplayName="Get Text Grand Total Cost" sap2010:WorkflowViewState.IdRef="GetValue_7">
+              <ui:GetValue.Target>
+                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" TimeoutMS="{x:Null}" InformativeScreenshot="f5213e1fdd47233bfd757be9916332e1" Selector="&lt;html title='Order | Pega Studio Training Web Application' /&gt;&lt;webctrl id='total_value' tag='SPAN' /&gt;" WaitForReady="INTERACTIVE" />
+              </ui:GetValue.Target>
+              <ui:GetValue.Value>
+                <OutArgument x:TypeArguments="x:String">[grandTotal]</OutArgument>
+              </ui:GetValue.Value>
+            </ui:GetValue>
           </Sequence>
         </ActivityAction>
       </ui:BrowserScope.Body>
     </ui:BrowserScope>
-    <ui:OutputDataTable DataTable="[dtInvoice]" DisplayName="Output Data Table dtInvoice" sap2010:WorkflowViewState.IdRef="OutputDataTable_1" Text="[outputInvoice]" />
+    <ui:OutputDataTable DataTable="[dtOrders]" DisplayName="Output Data Table dtOrders" sap2010:WorkflowViewState.IdRef="OutputDataTable_1" Text="[outputInvoice]" />
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="Here is the invoice data table..." />
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_4" Text="[outputInvoice]" />
-    <sads:DebugSymbol.Symbol>d0FFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcR2V0dGluZyBJbnZvaWNlIERhdGEueGFtbEBPA+wBDgIBAVQzVDYCAQJZBVl8AgFZWgXnARcCAQ3oAQXoAagBAgEI6QEF6QGCAQIBBuoBBeoBcAIBA1lcWXkCAVpargJa9gICAVhgC+QBFgIBDugBlAHoAaUBAgEL6AEj6AEwAgEJ6QFc6QF/AgEH6gFc6gFtAgEEYQ1zGAIBVnQNdI4BAgFUdQ11nhQCAVF2DeMBKAIBD22GAW2DAwIBV3RkdIsBAgFVdSp1NwIBUnaoAXa8AQIBUHwT4AEeAgEQfRWDASkCAUuEARXfASUCARF9RH1QAgFOgAEbgAFKAgFNfacBfa8BAgFMhAHRAYQB3QECAUmKARvcASYCARKLAR2PAS0CAUOQAR2UAS0CAT2VAR2ZAS0CATeaAR3TASICARjUAR3bASYCARONAUmNAVYCAUeLAcUBiwHMAQIBRYsBYIsBaQIBRJIBSZIBWgIBQZABygGQAdEBAgE/kAFgkAFqAgE+lwFJlwFYAgE7lQHGAZUBzQECATmVAWCVAWgCATiaASuaAVQCARmcASHOASwCARzRASHRAVoCARvZAUfZAVQCARbWAUjWAVECARSdASO0ATMCAS61ASPMATMCASXNASPNAcMCAgEdrgEnsgFAAgE0owEpqgE3AgEvxgEnygFAAgEruwEpwgE3AgEmzQHpAc0B9gECASPNAaUBzQHeAQIBHrABugGwAfsCAgE1qAFVqAFgAgEwpQG8AaUB7QICATLIAboByAH7AgIBLMABVcABYQIBJ70BvAG9Ad8CAgEp</sads:DebugSymbol.Symbol>
+    <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_7" Text="[&quot;Here is the grand total: &quot; + grandTotal]" />
+    <sads:DebugSymbol.Symbol>d0FFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcR2V0dGluZyBJbnZvaWNlIERhdGEueGFtbCFMA/kBDgIBAVEzUTYCAQJWBVZ8AgEmVwXzARcCARD0AQX0AaYBAgEL9QEF9QGCAQIBCfYBBfYBcAIBBvcBBfcBlQECAQNWXFZ5AgEnV64CV/YCAgElXQvwARYCARH0AZIB9AGjAQIBDvQBI/QBLwIBDPUBXPUBfwIBCvYBXPYBbQIBB/cBXPcBkgECAQReDXAYAgEjcQ1xjgECASFyDXodAgEgew3nASgCARboAQ3vARsCARJqhgFqgwMCASRxZHGLAQIBInuoAXu8AQIBH4EBE+QBHgIBF+0BOe0BRQIBE+oBoAHqAZICAgEVggEViAEpAgEaiQEVrwElAgEZsAEV4wElAgEYggFEggFQAgEdhQEbhQFKAgEcggGnAYIBrwECARs=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="1077,61" />
-      <sap2010:ViewStateData Id="Click_1" sap:VirtualizedContainerService.HintSize="1041,106" />
-      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="829,61" />
-      <sap2010:ViewStateData Id="BuildDataTable_2" sap:VirtualizedContainerService.HintSize="829,59" />
-      <sap2010:ViewStateData Id="ExcelReadRange_1" sap:VirtualizedContainerService.HintSize="1005,59" />
-      <sap2010:ViewStateData Id="GetRowItem_1" sap:VirtualizedContainerService.HintSize="953,64" />
-      <sap2010:ViewStateData Id="GetRowItem_2" sap:VirtualizedContainerService.HintSize="953,64" />
-      <sap2010:ViewStateData Id="GetRowItem_3" sap:VirtualizedContainerService.HintSize="953,64" />
-      <sap2010:ViewStateData Id="GetValue_1" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="WaitUiElementAppear_1" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="AnchorBase_1" sap:VirtualizedContainerService.HintSize="706,198" />
-      <sap2010:ViewStateData Id="GetValue_2" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="WaitUiElementAppear_2" sap:VirtualizedContainerService.HintSize="314,106" />
-      <sap2010:ViewStateData Id="AnchorBase_2" sap:VirtualizedContainerService.HintSize="706,198" />
-      <sap2010:ViewStateData Id="AddDataRow_1" sap:VirtualizedContainerService.HintSize="706,22">
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="450,61" />
+      <sap2010:ViewStateData Id="Click_1" sap:VirtualizedContainerService.HintSize="414,106" />
+      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="414,61" />
+      <sap2010:ViewStateData Id="BuildDataTable_2" sap:VirtualizedContainerService.HintSize="314,59" />
+      <sap2010:ViewStateData Id="Sequence_13" sap:VirtualizedContainerService.HintSize="336,183">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="728,622">
+      <sap2010:ViewStateData Id="CommentOut_5" sap:VirtualizedContainerService.HintSize="414,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ExcelReadRange_1" sap:VirtualizedContainerService.HintSize="314,59" />
+      <sap2010:ViewStateData Id="GetRowItem_3" sap:VirtualizedContainerService.HintSize="489,64" />
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="264,184">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -271,16 +285,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="953,769" />
-      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="953,60" />
-      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="975,1305">
+      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="489,331" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="511,559">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ForEachRow_1" sap:VirtualizedContainerService.HintSize="1005,1452">
+      <sap2010:ViewStateData Id="ForEachRow_1" sap:VirtualizedContainerService.HintSize="541,706">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -289,22 +302,74 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="1027,1675">
+      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="563,830">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="ExcelApplicationScope_2" sap:VirtualizedContainerService.HintSize="1041,1784" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="1063,2254">
+      <sap2010:ViewStateData Id="CommentOut_1" sap:VirtualizedContainerService.HintSize="314,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="WriteLine_6" sap:VirtualizedContainerService.HintSize="314,61" />
+      <sap2010:ViewStateData Id="GetValue_3" sap:VirtualizedContainerService.HintSize="314,106" />
+      <sap2010:ViewStateData Id="GetValue_4" sap:VirtualizedContainerService.HintSize="314,106" />
+      <sap2010:ViewStateData Id="GetValue_5" sap:VirtualizedContainerService.HintSize="314,106" />
+      <sap2010:ViewStateData Id="GetValue_6" sap:VirtualizedContainerService.HintSize="314,106" />
+      <sap2010:ViewStateData Id="AddDataRow_2" sap:VirtualizedContainerService.HintSize="314,22" />
+      <sap2010:ViewStateData Id="Assign_2" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="Sequence_8" sap:VirtualizedContainerService.HintSize="336,931">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="1077,2400">
+      <sap2010:ViewStateData Id="While_1" sap:VirtualizedContainerService.HintSize="464,1088">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_10" sap:VirtualizedContainerService.HintSize="486,1212">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="CommentOut_2" sap:VirtualizedContainerService.HintSize="314,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_7" sap:VirtualizedContainerService.HintSize="336,365">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ExcelApplicationScope_2" sap:VirtualizedContainerService.HintSize="414,474" />
+      <sap2010:ViewStateData Id="GetValue_7" sap:VirtualizedContainerService.HintSize="414,106" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="436,1082">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="BrowserScope_1" sap:VirtualizedContainerService.HintSize="450,1228">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -312,17 +377,18 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="OutputDataTable_1" sap:VirtualizedContainerService.HintSize="685,22" />
-      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="685,61" />
-      <sap2010:ViewStateData Id="WriteLine_4" sap:VirtualizedContainerService.HintSize="685,61" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="1099,2889">
+      <sap2010:ViewStateData Id="OutputDataTable_1" sap:VirtualizedContainerService.HintSize="450,22" />
+      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="450,61" />
+      <sap2010:ViewStateData Id="WriteLine_4" sap:VirtualizedContainerService.HintSize="450,61" />
+      <sap2010:ViewStateData Id="WriteLine_7" sap:VirtualizedContainerService.HintSize="450,61" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="472,1818">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Placing_Order_1" sap:VirtualizedContainerService.HintSize="1139,2969" />
+      <sap2010:ViewStateData Id="Placing_Order_1" sap:VirtualizedContainerService.HintSize="512,1898" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
