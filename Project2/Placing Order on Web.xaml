@@ -67,7 +67,6 @@
       <AssemblyReference>UiPath.Excel</AssemblyReference>
       <AssemblyReference>UiPath.Mail</AssemblyReference>
       <AssemblyReference>System.ValueTuple</AssemblyReference>
-      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
   <Sequence DisplayName="Placing Order on Web" sap2010:WorkflowViewState.IdRef="Sequence_1">
@@ -80,7 +79,7 @@
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Starting product ordering..." />
     <ui:UiElementExists DisplayName="Element Exists HomePage" Exists="[homePage]" sap2010:WorkflowViewState.IdRef="UiElementExists_1">
       <ui:UiElementExists.Target>
-        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="f194ffd241d460a3efda3be43c88cf80" Selector="&lt;html title='Home | Pega Studio Training Web Application' /&gt;&lt;webctrl tag='H1' /&gt;" TimeoutMS="3000" WaitForReady="INTERACTIVE" />
+        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="f194ffd241d460a3efda3be43c88cf80" Selector="&lt;html title='Home | Pega Studio Training Web Application' /&gt;&lt;webctrl tag='H1' /&gt;" TimeoutMS="1000" WaitForReady="INTERACTIVE" />
       </ui:UiElementExists.Target>
     </ui:UiElementExists>
     <If Condition="[homePage = true]" DisplayName="If we are on the Homepage" sap2010:WorkflowViewState.IdRef="If_1">
@@ -200,12 +199,12 @@
                           </ui:SelectItem>
                           <ui:UiElementExists DisplayName="Element Exists 404 No Stock" Exists="[negativeStock]" sap2010:WorkflowViewState.IdRef="UiElementExists_2">
                             <ui:UiElementExists.Target>
-                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="37cf3f727f79b9bb570ca30a4c88e25f" Selector="&lt;html title='404 Page Not Found' /&gt;&lt;webctrl id='content' tag='DIV' aaname='404 Page Not Found*' /&gt;" TimeoutMS="3000" WaitForReady="INTERACTIVE" />
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="37cf3f727f79b9bb570ca30a4c88e25f" Selector="&lt;html title='404 Page Not Found' /&gt;&lt;webctrl id='content' tag='DIV' aaname='404 Page Not Found*' /&gt;" TimeoutMS="1000" WaitForReady="INTERACTIVE" />
                             </ui:UiElementExists.Target>
                           </ui:UiElementExists>
                           <ui:UiElementExists DisplayName="Element Exists 0 Stock" Exists="[noStock]" sap2010:WorkflowViewState.IdRef="UiElementExists_3">
                             <ui:UiElementExists.Target>
-                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="6030e19c8a0dc88233454b6ae4c42734" Selector="&lt;html title='ACME Products | Pega Studio Training Web Application' /&gt;&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' parentid='load_content' tag='DIV' aaname='Alert      There are only 0 of this item remaining in stock.*' /&gt;" TimeoutMS="3000" WaitForReady="INTERACTIVE" />
+                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" InformativeScreenshot="6030e19c8a0dc88233454b6ae4c42734" Selector="&lt;html title='ACME Products | Pega Studio Training Web Application' /&gt;&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' parentid='load_content' tag='DIV' aaname='Alert      There are only 0 of this item remaining in stock.*' /&gt;" TimeoutMS="1000" WaitForReady="INTERACTIVE" />
                             </ui:UiElementExists.Target>
                           </ui:UiElementExists>
                         </Sequence>
@@ -321,7 +320,7 @@
         </ActivityAction>
       </ui:BrowserScope.Body>
     </ui:BrowserScope>
-    <sads:DebugSymbol.Symbol>d0FFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUGxhY2luZyBPcmRlciBvbiBXZWIueGFtbE9JA8UCDgIBAVAFUH0CAV1RBVUaAgFYVgV3CgIBTHgFwwIXAgECUFxQegIBXlODAVPhAQIBXFPsAVPyAQIBW1FGUVICAVlWE1YmAgFNWAlyGwIBUXUJdYcBAgFPeIMCeMsCAgFLeNYCeOUCAgFJfgvAAhYCAQNYowJY5wICAVdeD28aAgFSdWB1hAECAVB/DY0BGAIBR44BDZwBGAIBQp0BDaEBIgIBPaIBDeUBEgIBIuYBDb8CEgIBBF8RX6wBAgFVYBFuHAIBU4sBoAGLAewBAgFImgGLAZoBxQICAUWaAdACmgHXAgIBRI4Bao4BcAIBQ58BiwGfAZICAgFBnwGdAp8BowICAUCdAVOdAWMCAT6iARuiATMCASOkARHXARwCASraARHjARwCASXmARvmAUUCAQXoARGRAhwCARWUAhG9AhwCAQhfaF+pAQIBVmykAWzYAQIBVKUBE9YBJQIBK9sBE+IBHAIBJukBE+kBigECASDqARP4AR4CAR75AROHAh4CARyIAhOPAhwCARiQAhOQAokBAgEWlQITlQKAAQIBE5YCE6QCHgIBEaUCE6wCHAIBDa0CE7sCHgIBC7wCE7wCjgECAQmlAYEBpQGQAQIBO6sBGdMBJAIBLOABP+ABQwIBKd0BQN0BSQIBJ+kBaukBhwECASH2AaYB9gH9AgIBH4UCpgGFAoQCAgEdjQI+jQJEAgEbigI/igJHAgEZkAJqkAKGAQIBF5UCapUCfQIBFKICpgGiAqMCAgESqgI+qgJHAgEQpwI/pwJHAgEOuQKmAbkCvAICAQy8Amq8AosBAgEKrAEbyAErAgE3yQEbzQEwAgEyzgEb0gEwAgEtrAHRAawB5AECATjGAa4BxgGxAgIBOssBmQHLAYkCAgE2ywGUAssBmgICATXJAWDJAXECATPQAZkB0AG2AwIBMdABwQPQAccDAgEwzgFbzgFmAgEu</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0FFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcUGxhY2luZyBPcmRlciBvbiBXZWIueGFtbE9IA8QCDgIBAU8FT30CAV1QBVQaAgFYVQV2CgIBTHcFwgIXAgECT1xPegIBXlKDAVLhAQIBXFLsAVLyAQIBW1BGUFICAVlVE1UmAgFNVwlxGwIBUXQJdIcBAgFPd4MCd8sCAgFLd9YCd+UCAgFJfQu/AhYCAQNXowJX5wICAVddD24aAgFSdGB0hAECAVB+DYwBGAIBR40BDZsBGAIBQpwBDaABIgIBPaEBDeQBEgIBIuUBDb4CEgIBBF4RXqwBAgFVXxFtHAIBU4oBoAGKAewBAgFImQGLAZkBxQICAUWZAdACmQHXAgIBRI0Bao0BcAIBQ54BiwGeAZICAgFBngGdAp4BowICAUCcAVOcAWMCAT6hARuhATMCASOjARHWARwCASrZARHiARwCASXlARvlAUUCAQXnARGQAhwCARWTAhG8AhwCAQheaF6pAQIBVmukAWvYAQIBVKQBE9UBJQIBK9oBE+EBHAIBJugBE+gBigECASDpARP3AR4CAR74AROGAh4CARyHAhOOAhwCARiPAhOPAokBAgEWlAITlAKAAQIBE5UCE6MCHgIBEaQCE6sCHAIBDawCE7oCHgIBC7sCE7sCjgECAQmkAYEBpAGQAQIBO6oBGdIBJAIBLN8BP98BQwIBKdwBQNwBSQIBJ+gBaugBhwECASH1AaYB9QH9AgIBH4QCpgGEAoQCAgEdjAI+jAJEAgEbiQI/iQJHAgEZjwJqjwKGAQIBF5QCapQCfQIBFKECpgGhAqMCAgESqQI+qQJHAgEQpgI/pgJHAgEOuAKmAbgCvAICAQy7Amq7AosBAgEKqwEbxwErAgE3yAEbzAEwAgEyzQEb0QEwAgEtqwHRAasB5AECATjFAa4BxQGxAgIBOsoBmQHKAYkCAgE2ygGUAsoBmgICATXIAWDIAXECATPPAZkBzwG2AwIBMc8BwQPPAccDAgEwzQFbzQFmAgEu</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>

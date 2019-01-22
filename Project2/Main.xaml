@@ -192,6 +192,7 @@
                                             </ActivityAction.Argument>
                                             <Sequence sap2010:WorkflowViewState.IdRef="Sequence_10">
                                               <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_6" Text="[exception.ToString]" />
+                                              <ui:LogMessage DisplayName="Log Message" Level="Error" Message="[exception.ToString]" sap2010:WorkflowViewState.IdRef="LogMessage_2" />
                                               <ui:MessageBox ChosenButton="{x:Null}" Buttons="Ok" Caption="Something went wrong." DisplayName="Message Box" sap2010:WorkflowViewState.IdRef="MessageBox_3" Text="[&quot;Something went wrong. Maybe you forgot to disable either Gmail or Antivirus security settings?&quot;]" TopMost="True" />
                                             </Sequence>
                                           </ActivityAction>
@@ -234,7 +235,7 @@
     <x:Reference>__ReferenceID7</x:Reference>
     <x:Reference>__ReferenceID8</x:Reference>
     <x:Reference>__ReferenceID9</x:Reference>
-    <sads:DebugSymbol.Symbol>dzFFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcTWFpbi54YW1sQ0YD7gEPAgEBUQlYFAIBU1sNahgCATxtEYQBHAIBMYcBFY8BIAIBLJIBGZkBJAIBJZwBHaMBKAIBHqYBIa0BLAIBF7ABJcgBMAIBCMsBKcsBlQECAQXOAS3OAf4BAgECUgtWIwIBVlcLV+sBAgFUYA9lJwIBTWYPZq8BAgFIZw9ndwIBRWgPaLIBAgFAaQ9peAIBPW8VdSACATeCARWCAaABAgE1fRl9lwECATKIAReOAS8CAS2TARuYATMCASadAR+iATcCAR+nASOsATsCARiyASm5ATQCARDBAS3EATgCAQnLAT7LAU0CAQbOAWnOAXwCAQTOAcsBzgHsAQIBA1RJVFECAVhStwFS0AECAVdXvwFX6AECAVViUGJaAgFRY1FjXAIBT2C7AWDVAQIBTmaeAWasAQIBS2YtZjkCAUlnZmd0AgFGaKABaK8BAgFDaC1oOgIBQWlmaXUCAT5wF3QvAgE4ggFsggGdAQIBNn2HAX2UAQIBM4oBV4oBYQIBL4gBwwGIAdoBAgEulQFclQFmAgEqlgFalgFmAgEokwHHAZMB4gECASegAWCgAWsCASOfAVyfAWQCASGdAcsBnQHhAQIBIKoBZaoBcgIBHKkBYKkBaAIBGqcBzwGnAfcBAgEZswEruAFDAgERwgEvwgGfAQIBDcMBL8MB0QICAQpyVHJcAgE6cMMBcOQBAgE5tQFrtQF1AgEVtgFptgF1AgETswHXAbMB7gECARLCAYYBwgGcAQIBDsMBa8MBggECAQzDAdEBwwG/AgIBCw==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>dzFFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcTWFpbi54YW1sRUYD7wEPAgEBUQlYFAIBVlsNahgCAT9tEYQBHAIBNIcBFY8BIAIBL5IBGZkBJAIBKJwBHaMBKAIBIaYBIa0BLAIBGrABJckBMAIBCMwBKcwBlQECAQXPAS3PAf4BAgECUgtWIwIBWVcLV+sBAgFXYA9lJwIBUGYPZq8BAgFLZw9ndwIBSGgPaLIBAgFDaQ9peAIBQG8VdSACATqCARWCAaABAgE4fRl9lwECATWIAReOAS8CATCTARuYATMCASmdAR+iATcCASKnASOsATsCARuyASm5ATQCARPBAS3FATgCAQnMAT7MAU0CAQbPAWnPAXwCAQTPAcsBzwHsAQIBA1RJVFECAVtStwFS0AECAVpXvwFX6AECAVhiUGJaAgFUY1FjXAIBUmC7AWDVAQIBUWaeAWasAQIBTmYtZjkCAUxnZmd0AgFJaKABaK8BAgFGaC1oOgIBRGlmaXUCAUFwF3QvAgE7ggFsggGdAQIBOX2HAX2UAQIBNooBV4oBYQIBMogBwwGIAdoBAgExlQFclQFmAgEtlgFalgFmAgErkwHHAZMB4gECASqgAWCgAWsCASafAVyfAWQCASSdAcsBnQHhAQIBI6oBZaoBcgIBH6kBYKkBaAIBHacBzwGnAfcBAgEcswEruAFDAgEUwgEvwgGfAQIBEMMBL8MBtgECAQ3EAS/EAdECAgEKclRyXAIBPXDDAXDkAQIBPLUBa7UBdQIBGLYBabYBdQIBFrMB1wGzAe4BAgEVwgGGAcIBnAECARHDAW7DAYQBAgEOxAFrxAGCAQIBDMQB0QHEAb8CAgEL</sads:DebugSymbol.Symbol>
   </Flowchart>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -338,23 +339,24 @@
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="WriteLine_6" sap:VirtualizedContainerService.HintSize="314,61" />
+      <sap2010:ViewStateData Id="LogMessage_2" sap:VirtualizedContainerService.HintSize="314,91" />
       <sap2010:ViewStateData Id="MessageBox_3" sap:VirtualizedContainerService.HintSize="314,59" />
-      <sap2010:ViewStateData Id="Sequence_10" sap:VirtualizedContainerService.HintSize="336,284">
+      <sap2010:ViewStateData Id="Sequence_10" sap:VirtualizedContainerService.HintSize="336,415">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Catch`1_2" sap:VirtualizedContainerService.HintSize="404,21">
+      <sap2010:ViewStateData Id="Catch`1_2" sap:VirtualizedContainerService.HintSize="400,484">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="TryCatch_2" sap:VirtualizedContainerService.HintSize="200,51" />
+      <sap2010:ViewStateData Id="TryCatch_2" sap:VirtualizedContainerService.HintSize="414,646" />
       <sap2010:ViewStateData Id="CloseTab_1" sap:VirtualizedContainerService.HintSize="200,22">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
