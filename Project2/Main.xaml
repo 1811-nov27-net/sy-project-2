@@ -190,13 +190,13 @@
                                             <ActivityAction.Argument>
                                               <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
                                             </ActivityAction.Argument>
-                                            <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_5" Text="[exception.ToString]" />
+                                            <Sequence sap2010:WorkflowViewState.IdRef="Sequence_10">
+                                              <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_6" Text="[exception.ToString]" />
+                                              <ui:MessageBox ChosenButton="{x:Null}" Buttons="Ok" Caption="Something went wrong." DisplayName="Message Box" sap2010:WorkflowViewState.IdRef="MessageBox_3" Text="[&quot;Something went wrong. Maybe you forgot to disable either Gmail or Antivirus security settings?&quot;]" TopMost="True" />
+                                            </Sequence>
                                           </ActivityAction>
                                         </Catch>
                                       </TryCatch.Catches>
-                                      <TryCatch.Finally>
-                                        <ui:MessageBox ChosenButton="{x:Null}" Buttons="Ok" Caption="Something went wrong." DisplayName="Message Box" sap2010:WorkflowViewState.IdRef="MessageBox_2" Text="[&quot;Something went wrong. Maybe you forgot to disable either Gmail or Antivirus security settings?&quot;]" TopMost="True" />
-                                      </TryCatch.Finally>
                                     </TryCatch>
                                     <FlowStep.Next>
                                       <FlowStep x:Name="__ReferenceID9" sap2010:WorkflowViewState.IdRef="FlowStep_11">
@@ -234,7 +234,7 @@
     <x:Reference>__ReferenceID7</x:Reference>
     <x:Reference>__ReferenceID8</x:Reference>
     <x:Reference>__ReferenceID9</x:Reference>
-    <sads:DebugSymbol.Symbol>dzFFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcTWFpbi54YW1sQkYD7gEPAgEBUQlYFAIBUlsNahgCATttEYQBHAIBMIcBFY8BIAIBK5IBGZkBJAIBJJwBHaMBKAIBHaYBIa0BLAIBFrABJcgBMAIBCMsBKcsBlQECAQXOAS3OAf4BAgECUgtWIwIBVVcLV+sBAgFTYA9lJwIBTGYPZq8BAgFHZw9ndwIBRGgPaLIBAgE/aQ9peAIBPG8VdSACATaCARWCAaABAgE0fRl9lwECATGIAReOAS8CASyTARuYATMCASWdAR+iATcCAR6nASOsATsCAReyASm5ATQCAQ/GASnGAcsCAgEMwQEtwQGdAQIBCcsBPssBTQIBBs4Bac4BfAIBBM4BywHOAewBAgEDVElUUQIBV1K3AVLQAQIBVle/AVfoAQIBVGJQYloCAVBjUWNcAgFOYLsBYNUBAgFNZp4BZqwBAgFKZi1mOQIBSGdmZ3QCAUVooAForwECAUJoLWg6AgFAaWZpdQIBPXAXdC8CATeCAWyCAZ0BAgE1fYcBfZQBAgEyigFXigFhAgEuiAHDAYgB2gECAS2VAVyVAWYCASmWAVqWAWYCASeTAccBkwHiAQIBJqABYKABawIBIp8BXJ8BZAIBIJ0BywGdAeEBAgEfqgFlqgFyAgEbqQFgqQFoAgEZpwHPAacB9wECARizASu4AUMCARDGAWXGAXwCAQ7GAcsBxgG5AgIBDcEBhAHBAZoBAgEKclRyXAIBOXDDAXDkAQIBOLUBa7UBdQIBFLYBabYBdQIBErMB1wGzAe4BAgER</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>dzFFOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcTWFpbi54YW1sQ0YD7gEPAgEBUQlYFAIBU1sNahgCATxtEYQBHAIBMYcBFY8BIAIBLJIBGZkBJAIBJZwBHaMBKAIBHqYBIa0BLAIBF7ABJcgBMAIBCMsBKcsBlQECAQXOAS3OAf4BAgECUgtWIwIBVlcLV+sBAgFUYA9lJwIBTWYPZq8BAgFIZw9ndwIBRWgPaLIBAgFAaQ9peAIBPW8VdSACATeCARWCAaABAgE1fRl9lwECATKIAReOAS8CAS2TARuYATMCASadAR+iATcCAR+nASOsATsCARiyASm5ATQCARDBAS3EATgCAQnLAT7LAU0CAQbOAWnOAXwCAQTOAcsBzgHsAQIBA1RJVFECAVhStwFS0AECAVdXvwFX6AECAVViUGJaAgFRY1FjXAIBT2C7AWDVAQIBTmaeAWasAQIBS2YtZjkCAUlnZmd0AgFGaKABaK8BAgFDaC1oOgIBQWlmaXUCAT5wF3QvAgE4ggFsggGdAQIBNn2HAX2UAQIBM4oBV4oBYQIBL4gBwwGIAdoBAgEulQFclQFmAgEqlgFalgFmAgEokwHHAZMB4gECASegAWCgAWsCASOfAVyfAWQCASGdAcsBnQHhAQIBIKoBZaoBcgIBHKkBYKkBaAIBGqcBzwGnAfcBAgEZswEruAFDAgERwgEvwgGfAQIBDcMBL8MB0QICAQpyVHJcAgE6cMMBcOQBAgE5tQFrtQF1AgEVtgFptgF1AgETswHXAbMB7gECARLCAYYBwgGcAQIBDsMBa8MBggECAQzDAdEBwwG/AgIBCw==</sads:DebugSymbol.Symbol>
   </Flowchart>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -337,7 +337,15 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="WriteLine_5" sap:VirtualizedContainerService.HintSize="210,61" />
+      <sap2010:ViewStateData Id="WriteLine_6" sap:VirtualizedContainerService.HintSize="314,61" />
+      <sap2010:ViewStateData Id="MessageBox_3" sap:VirtualizedContainerService.HintSize="314,59" />
+      <sap2010:ViewStateData Id="Sequence_10" sap:VirtualizedContainerService.HintSize="336,284">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="Catch`1_2" sap:VirtualizedContainerService.HintSize="404,21">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -346,8 +354,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="MessageBox_2" sap:VirtualizedContainerService.HintSize="314,59" />
-      <sap2010:ViewStateData Id="TryCatch_2" sap:VirtualizedContainerService.HintSize="418,287" />
+      <sap2010:ViewStateData Id="TryCatch_2" sap:VirtualizedContainerService.HintSize="200,51" />
       <sap2010:ViewStateData Id="CloseTab_1" sap:VirtualizedContainerService.HintSize="200,22">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -462,7 +469,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="1330,756" />
+      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="1330,716" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
