@@ -1,5 +1,6 @@
 ﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Emailing_Invoice"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:d="clr-namespace:DataTableToHtmlTable;assembly=DataTableToHtmlTable"
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
  xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
@@ -69,6 +70,7 @@
       <AssemblyReference>UiPath.Excel</AssemblyReference>
       <AssemblyReference>UiPath.Mail</AssemblyReference>
       <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
   <Sequence DisplayName="Emailing Invoice" sap2010:WorkflowViewState.IdRef="Sequence_1">
@@ -77,6 +79,8 @@
       <Variable x:TypeArguments="x:String" Name="assetEmailAddress" />
       <Variable x:TypeArguments="x:String" Name="secureEmailPassword" />
       <Variable x:TypeArguments="x:String" Name="outputOrders" />
+      <Variable x:TypeArguments="sd:DataTable" Name="dtInvoice" />
+      <Variable x:TypeArguments="x:String" Name="invoiceHTML" />
     </Sequence.Variables>
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="Getting email credentials from Orchestrator, and sending email invoice" />
     <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="personalEmail" DisplayName="Get Credential Email Info" sap2010:WorkflowViewState.IdRef="GetRobotCredential_1" Password="[assetEmailPassword]" Username="[assetEmailAddress]" />
@@ -88,28 +92,85 @@
         <InArgument x:TypeArguments="x:String">[new System.Net.NetworkCredential(string.Empty, assetEmailPassword).Password]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:OutputDataTable DataTable="[dtOrders]" DisplayName="Output Data Table dtOrders" sap2010:WorkflowViewState.IdRef="OutputDataTable_1" Text="[outputOrders]" />
-    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="Sending this to myself" Body="[&quot;Here is your order invoice: &quot; + vbCrLf + vbCrLf +&#xA;outputOrders + vbCrLf + &#xA;&quot;Grand total: &quot; + grandTotal]" DisplayName="Send SMTP Mail Message" Email="[assetEmailAddress]" EnableSSL="True" From="[assetEmailAddress]" sap2010:WorkflowViewState.IdRef="SendMail_1" IsBodyHtml="False" Name="OpenSpan Product Company" Password="[secureEmailPassword]" Port="465" SecureConnection="SslOnConnect" Server="smtp.gmail.com" Subject="[&quot;Product Invoice &quot; + Date.Now.ToString]" To="[assetEmailAddress]">
+    <ui:CommentOut DisplayName="Comment Out" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <ui:OutputDataTable DataTable="[dtOrders]" DisplayName="Output Data Table dtOrders" sap2010:WorkflowViewState.IdRef="OutputDataTable_1" Text="[outputOrders]" />
+        </Sequence>
+      </ui:CommentOut.Body>
+    </ui:CommentOut>
+    <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" WorkbookPath="ProductOrders.xlsx">
+      <ui:ExcelApplicationScope.Body>
+        <ActivityAction x:TypeArguments="ui:WorkbookApplication">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbookScope" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Do" sap2010:WorkflowViewState.IdRef="Sequence_3">
+            <ui:ExcelReadRange AddHeaders="True" DataTable="[dtInvoice]" DisplayName="Read Range" sap2010:WorkflowViewState.IdRef="ExcelReadRange_1" SheetName="Invoice">
+              <ui:ExcelReadRange.Range>
+                <InArgument x:TypeArguments="x:String">
+                  <Literal x:TypeArguments="x:String" Value="" />
+                </InArgument>
+              </ui:ExcelReadRange.Range>
+            </ui:ExcelReadRange>
+          </Sequence>
+        </ActivityAction>
+      </ui:ExcelApplicationScope.Body>
+    </ui:ExcelApplicationScope>
+    <d:DataTableToHtmlTable Border="solid" CellBGColor="[Color.White]" DataTable="[dtInvoice]" DisplayName="Data table to html table" FontColor="[Color.Black]" FontSize="14" FontStyle="normal" FontWeight="bold" Fonts="Calibri" HeaderBGColor="[Color.WhiteSmoke]" sap2010:WorkflowViewState.IdRef="DataTableToHtmlTable_1" Output="[invoiceHTML]" TextAlign="center" />
+    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="Sending this to myself" Body="[&quot;&lt;p style=&quot;&quot;text-align:left&quot;&quot;&gt;&quot;+&#xD;&#xA;&quot;&lt;img style=&quot;&quot;float:left&quot;&quot; src=&quot;&quot;http://training.openspan.com/system/resources/frontend/images/logo_pega.png&quot;&quot;/&gt;&quot;+&#xD;&#xA;&quot;&lt;span style=&quot;&quot;font-family:Calibri;font-style:normal;font-weight:bold;float:left;font-size:18px&quot;&quot;&gt;&quot; +&#xD;&#xA;&quot;RPA Product Company &lt;/span&gt;&quot; +&#xD;&#xA;&quot;&lt;span style=&quot;&quot;font-family:Calibri;font-style:normal;font-weight:bold;float:right;font-size:20px&quot;&quot;&gt;&quot; +&#xD;&#xA;&quot;Order # 512345 &lt;/span&gt;&quot;+&#xD;&#xA;&quot;&lt;/p&gt;&quot;+&#xD;&#xA;invoiceHTML+&#xD;&#xA;&quot;&lt;h2 style=&quot;&quot;font-family:Calibri;font-style:normal;font-weight:bold;text-align:right;font-size:18px&quot;&quot;&gt;&quot;+&#xD;&#xA;&quot;Total: $233.00&quot;+&#xD;&#xA;&quot;&lt;span style=&quot;&quot;float:right&quot;&quot;&gt;        &lt;/span&gt;&quot;+&#xD;&#xA;&quot;&lt;/h2&gt;&quot;]" DisplayName="Send SMTP Mail Message" Email="[assetEmailAddress]" EnableSSL="True" From="[assetEmailAddress]" sap2010:WorkflowViewState.IdRef="SendMail_1" IsBodyHtml="True" Name="OpenSpan Product Company" Password="[secureEmailPassword]" Port="465" SecureConnection="SslOnConnect" Server="smtp.gmail.com" Subject="[&quot;Product Invoice &quot; + Date.Now.ToString(&quot;MM/dd/yyyy&quot;)]" To="[assetEmailAddress]">
       <ui:SendMail.Files>
         <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
       </ui:SendMail.Files>
     </ui:SendMail>
+    <ui:CommentOut DisplayName="Comment Out" sap2010:WorkflowViewState.IdRef="CommentOut_2">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap2010:WorkflowViewState.IdRef="Sequence_4">
+          <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="[&quot;Here is your order invoice: &quot; + vbCrLf + vbCrLf +&#xA;outputOrders + vbCrLf + &#xA;&quot;Grand total: &quot; + grandTotal]" />
+        </Sequence>
+      </ui:CommentOut.Body>
+    </ui:CommentOut>
     <WriteLine DisplayName="Write Line" sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="Sent email invoice!" />
-    <sads:DebugSymbol.Symbol>dz1FOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcRW1haWxpbmcgSW52b2ljZS54YW1sGUoDYw4CAQFRBVGnAQIBIlIFUusBAgEcUwVaDgIBF1sFW6UBAgESXAVgEwIBBGEFYXQCAQJRXFGkAQIBI1I7UkoCASFS0wFS6AECAR9SswFSyQECAR1YMFh9AgEaVTFVRgIBGFuSAVuiAQIBFVsjWy8CARNclQVcqgUCARBcmwFcowICAQ9c3QRckQUCAQ5c+wJckAMCAQxczwJc5AICAQpclwRcnAQCAQlcxARc1AQCAQhc+gNckQQCAQZc1gNc8AMCAQVhXGFxAgED</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>dz1FOlxTdHVmZlxSZXZhdHVyZVxzeS1wcm9qZWN0LTJcUHJvamVjdDJcRW1haWxpbmcgSW52b2ljZS54YW1sJkwDhwEOAgEBVQVVpwECATFWBVbrAQIBK1cFXg4CASZfBWUVAgElZgV3IAIBHXgFeOwCAgEUeQV9EwIBBX4FhAEVAgEEhQEFhQF0AgECVVxVpAECATJWO1ZKAgEwVtMBVugBAgEuVrMBVskBAgEsXDBcfQIBKVkxWUYCASdmoAFmtAECASRsC3QWAgEeeMcCeNYCAgEbeKoBeK4BAgEaeFJ4XwIBGHg4eEcCARd4kQF4oAECARZ48gF4hgICARV5qAx5vQwCARJ5mwF5nwkCARB52At5pAwCAQ959wl5jAoCAQ15ywl54AkCAQt5kgt5lwsCAQp5vwt5zwsCAQl59Qp5jAsCAQd50Qp56woCAQaFAVyFAXECAQNtDXMhAgEfbTxtSQIBInATcEICASFtoAFtqQECASA=</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="314,61" />
-      <sap2010:ViewStateData Id="GetRobotCredential_1" sap:VirtualizedContainerService.HintSize="314,22" />
-      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="314,60">
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="414,61" />
+      <sap2010:ViewStateData Id="GetRobotCredential_1" sap:VirtualizedContainerService.HintSize="414,22" />
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="414,60">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="OutputDataTable_1" sap:VirtualizedContainerService.HintSize="314,22" />
-      <sap2010:ViewStateData Id="SendMail_1" sap:VirtualizedContainerService.HintSize="314,145">
+      <sap2010:ViewStateData Id="OutputDataTable_1" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="222,146">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="CommentOut_1" sap:VirtualizedContainerService.HintSize="414,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ExcelReadRange_1" sap:VirtualizedContainerService.HintSize="314,59" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="336,183">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ExcelApplicationScope_1" sap:VirtualizedContainerService.HintSize="414,292" />
+      <sap2010:ViewStateData Id="DataTableToHtmlTable_1" sap:VirtualizedContainerService.HintSize="414,22" />
+      <sap2010:ViewStateData Id="SendMail_1" sap:VirtualizedContainerService.HintSize="414,145">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -118,15 +179,31 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="314,61" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="336,695">
+      <sap2010:ViewStateData Id="WriteLine_3" sap:VirtualizedContainerService.HintSize="210,61" />
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="232,185">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Emailing_Invoice_1" sap:VirtualizedContainerService.HintSize="376,775" />
+      <sap2010:ViewStateData Id="CommentOut_2" sap:VirtualizedContainerService.HintSize="414,51">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="414,61" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="436,1209">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Emailing_Invoice_1" sap:VirtualizedContainerService.HintSize="476,1289" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
